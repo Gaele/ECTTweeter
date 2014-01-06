@@ -3,8 +3,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * td1 from this page : http://perso.limsi.fr/lavergne
- * inutile
+ * td1 from this page : http://perso.limsi.fr/lavergne inutile 2
  * 
  * @author vvanhec
  * 

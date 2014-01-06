@@ -181,6 +181,11 @@ public class DataLoader {
 		return words;
 	}
 
+	public String casseSensitivity(final String s) {
+
+		return s;
+	}
+
 	public void print(final ArrayList<Tweet> tweets) {
 		for (final Tweet t : tweets) {
 			System.out.println(t);
