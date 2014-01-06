@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 /**
  * td1 from this page : http://perso.limsi.fr/lavergne
+ * inutile
  * 
  * @author vvanhec
  * 
