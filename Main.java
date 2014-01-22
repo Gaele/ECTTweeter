@@ -2,14 +2,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * td1 from this page : http://perso.limsi.fr/lavergne
-=======
-import java.util.ArrayList;
-import java.util.HashMap;
-
-/**
- * td1 from this page : http://perso.limsi.fr/lavergne inutile 2
->>>>>>> 25ef0ee79bdd782c420ad5c45b327be1144f1113
+ * from this page : http://perso.limsi.fr/lavergne
  * 
  * @author vvanhec
  * 
@@ -31,8 +24,10 @@ public class Main {
 		System.out.println("Starting...");
 
 		final Long start = System.nanoTime();
+		//		final File f = new File(
+		//				"/home/vincent/Programmation/ECT/twitter/train.txt");
 		final File f = new File(
-				"/home/vincent/Programmation/ECT/twitter/train.txt");
+				"src/data/train.txt");
 		final Classifier classifier = new Classifier01();
 		classifier.load(f);
 		final Long endLoad = System.nanoTime();
