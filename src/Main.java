@@ -3,6 +3,13 @@ import java.io.IOException;
 
 /**
  * td1 from this page : http://perso.limsi.fr/lavergne
+=======
+import java.util.ArrayList;
+import java.util.HashMap;
+
+/**
+ * td1 from this page : http://perso.limsi.fr/lavergne inutile 2
+>>>>>>> 25ef0ee79bdd782c420ad5c45b327be1144f1113
  * 
  * @author vvanhec
  * 
@@ -31,29 +38,6 @@ public class Main {
 		final Long endLoad = System.nanoTime();
 		System.out.println("> Load done in : " + (endLoad - start) / 1000000000 + " sec");
 		classifier.calculate();
-		//		classifier.displayByw();
-		//		System.out.println(classifier.getDictionary());
-
-		//		final DataLoader dl = new DataLoader();
-		//		dl.loadWordsFromFile(f);
-		//		final ArrayList<ArrayList<Tweet>> learningPart = dl.getLearning();
-		//		final ArrayList<ArrayList<Tweet>> evaluationPart = dl.getEvaluation();
-		//		final HashMap<String, Integer> dictionary = dl.getDictionary();
-		// System.out.println(dictionary);
-
-		// System.out.println(evaluationPart);
-
-		//		final double[] py = new double[Main.NB_CLASSES];
-		//		final double[] alpha = new double[Main.NB_CLASSES];
-		//		final double[][] byw = new double[Main.NB_CLASSES][dictionary.size()];
-
-		//		final Calculus c = new Calculus(Main.NB_CLASSES, learningPart,
-		//				dictionary, py, byw, alpha);
-		//		c.calculatePy();
-		//		c.calculateByw();
-		//		c.calculateA();
-		// c.displayPy();
-		// c.displayByw();
 
 		final Long endCalculus = System.nanoTime();
 		System.out.println("> Calculus done in : " + (endCalculus - endLoad) / 1000000000 + " sec");

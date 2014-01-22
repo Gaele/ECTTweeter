@@ -1,5 +1,7 @@
+
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.HashSet;
 
 /**
  * Represents a Tweet
@@ -11,8 +13,10 @@ public class Tweet {
 
 	private int polarite;
 	private String marque;
+	
 	//	private Integer[] words;
 	HashMap<Integer, Boolean> map; ////////////////////
+
 
 	public Tweet(final int polarite, final String marque, final Integer[] w) {
 		this.polarite = polarite;
