@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 public abstract class Classifier {
 
@@ -30,11 +29,11 @@ public abstract class Classifier {
 	/**
 	 * learning data
 	 */
-	private final ArrayList<ArrayList<Tweet>> learning = new ArrayList<ArrayList<Tweet>>();
+	//	private final ArrayList<ArrayList<Tweet>> learning = new ArrayList<ArrayList<Tweet>>();
 	/**
 	 * evaluation data
 	 */
-	private final ArrayList<ArrayList<Tweet>> evaluation = new ArrayList<ArrayList<Tweet>>();
+	//	private final ArrayList<ArrayList<Tweet>> evaluation = new ArrayList<ArrayList<Tweet>>();
 
 	/**
 	 * To give a unique identifier to all words
@@ -52,22 +51,18 @@ public abstract class Classifier {
 	 */
 	public Classifier() {
 		dictionary = new HashMap<String, Integer>();
-		for (int i = 0; i < NB_CLASSES; i++) {
-			evaluation.add(new ArrayList<Tweet>());
-			learning.add(new ArrayList<Tweet>());
-		}
 	}
 
-	public void calculate() {
-		py = new double[Main.NB_CLASSES];
-		alpha = new double[Main.NB_CLASSES];
-		byw = new double[Main.NB_CLASSES][dictionary.size()];
+	public void calculate(final ArrayList<ArrayList<Tweet>> datas) {
+		py = new double[NB_CLASSES];
+		alpha = new double[NB_CLASSES];
+		byw = new double[NB_CLASSES][dictionary.size()];
 
 		final Long startCalculus = System.nanoTime();
-		calculatePy();
+		calculatePy(datas);
 		final Long endPy = System.nanoTime();
 		System.out.println(">>> Time for Py: " + (endPy - startCalculus) / 1000000000 + " sec");
-		calculateByw();
+		calculateByw(datas);
 		final Long endByw = System.nanoTime();
 		System.out.println(">>> Time for Byw: " + (endByw - endPy) / 1000000000 + " sec");
 		calculateA();
@@ -78,7 +73,7 @@ public abstract class Classifier {
 	/**
 	 * Print stats about the performance (performance per class + confusion matrix)
 	 */
-	public void printResults() {
+	public void printResults(final ArrayList<ArrayList<Tweet>> evaluation) {
 		calculateClass(evaluation);
 		calculateAndDisplayConfusionMatrix(evaluation);
 	}
@@ -87,38 +82,19 @@ public abstract class Classifier {
 	 * Load the datas
 	 * @param f file do load
 	 */
-	public void load(final File f) {
+	public ArrayList<ArrayList<Tweet>> fileToArrayList(final File f) {
 		BufferedReader br = null;
 		String line;
-
+		final ArrayList<ArrayList<Tweet>> datas = new ArrayList<ArrayList<Tweet>>();
+		for (int i = 0; i < NB_CLASSES; i++) {
+			datas.add(new ArrayList<Tweet>());
+		}
 		try {
 			br = new BufferedReader(new FileReader(f));
-
-			Random r; // to split learning and evaluation parts
-			int learningSize = 0;
-			int evaluationSize = 0;
-			// get tweets
 			while ((line = br.readLine()) != null) {
-				// cut line
 				final Tweet tweet = getTweet(line);
-				// draw a random number between 0 and 99
-				r = new Random();
-				// 80% of the tweets are used for the learning
-				if (r.nextInt(99) < NB_FILE_TO_TAKE_IN_LEARNING) {
-					learning.get(tweet.getPolarite()).add(tweet);
-					learningSize++;
-				} else {
-					evaluation.get(tweet.getPolarite()).add(tweet);
-					evaluationSize++;
-				}
+				datas.get(tweet.getPolarite()).add(tweet);
 			}
-			System.out.println("Learning: " + learningSize + ", soit: "
-					+ learningSize * 100 / (evaluationSize + learningSize)
-					+ "%");
-			System.out.println("Evaluation: " + evaluationSize + ", soit: "
-					+ evaluationSize * 100 / (evaluationSize + learningSize)
-					+ "%");
-			System.out.println();
 		} catch (final FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (final IOException e) {
@@ -130,7 +106,7 @@ public abstract class Classifier {
 				e.printStackTrace();
 			}
 		}
-
+		return datas;
 	}
 
 	/**
@@ -139,7 +115,7 @@ public abstract class Classifier {
 	 * @param line
 	 * @return a Tweet
 	 */
-	public Tweet getTweet(final String line) {
+	private Tweet getTweet(final String line) {
 		final Integer middle = line.indexOf(")");
 		String texte = line.substring(middle + 2, line.length());
 		texte = filter(texte);
@@ -197,25 +173,17 @@ public abstract class Classifier {
 		}
 	}
 
-	public ArrayList<ArrayList<Tweet>> getLearning() {
-		return learning;
-	}
-
-	public ArrayList<ArrayList<Tweet>> getEvaluation() {
-		return evaluation;
-	}
-
 	public HashMap<String, Integer> getDictionary() {
 		return dictionary;
 	}
 
 	/////////////// **** CALCULUS ****
 
-	public void calculatePy() {
+	public void calculatePy(final ArrayList<ArrayList<Tweet>> datas) {
 		int total = 0;
 		int cpt = 0;
 		// for all class
-		for (final ArrayList<Tweet> alt : learning) {
+		for (final ArrayList<Tweet> alt : datas) {
 			py[cpt] = alt.size();
 			total += py[cpt];
 			cpt++;
@@ -228,11 +196,11 @@ public abstract class Classifier {
 	/**
 	 * calculate Beta
 	 */
-	public void calculateByw() {
+	public void calculateByw(final ArrayList<ArrayList<Tweet>> datas) {
 		// nb tweets in class i
 		final double[] dy = new double[NB_CLASSES];
 		for (int i = 0; i < NB_CLASSES; i++) {
-			dy[i] = learning.get(i).size();
+			dy[i] = datas.get(i).size();
 		}
 
 		// content of hash table : (class number, (word number in dictionary, nb of occurrences of this word))
@@ -245,7 +213,7 @@ public abstract class Classifier {
 		classNb = 0; // must start from the same number as in map initialization above
 
 		// for all classes
-		for (final ArrayList<Tweet> classe : learning) {
+		for (final ArrayList<Tweet> classe : datas) {
 			// for all tweets in the class
 			for (final Tweet tweet : classe) {
 				// for all words in the tweet
@@ -305,17 +273,31 @@ public abstract class Classifier {
 		for (int i = 0; i <= NB_CLASSES - 1; i++) {
 			// for all class
 			logPXY = alpha[i];
-			for(final int word : t.getWords()) {
-				logPXY += Math.log(byw[i][word])
-						- Math.log(1 - byw[i][word]);
-			}
 
+			for(final int word : t.getWords()) {
+				try {
+					logPXY += Math.log(byw[i][word])
+							- Math.log(1 - byw[i][word]);
+				} catch(final ArrayIndexOutOfBoundsException e) {
+					//					boolean found = false;
+					//					for(final Entry<String, Integer> data : dictionary.entrySet()) {
+					//						if(data.getValue() == word) {
+					//							System.out.println("Unknown word " + data.getKey());
+					//							found = true;
+					//						}
+					//					}
+					//					if(!found) {
+					//						System.out.println("BUG !!! " + word);
+					//					}
+				}
+			}
 			final double nouvelleValeur = logPXY + py[i];
 			if (maxLogPXY < nouvelleValeur) {
 				classe = i;
 				maxLogPXY = nouvelleValeur;
 			}
 		}
+		//		System.out.println("Unknown words: " + nbUnknownWords);
 		return classe;
 	}
 
@@ -350,6 +332,12 @@ public abstract class Classifier {
 					+ (totStats[i] - okStats[i]) + "/" + totStats[i] + " => "
 					+ (totStats[i] - okStats[i]) * 100 / totStats[i] + "%");
 		}
+		// words known and unknown
+		final int nbWordsKnown = byw[0].length;
+		final int totNbWords = dictionary.size();
+		System.out.println("nb words: " + totNbWords);
+		System.out.println("unknown words: " + ((double)totNbWords - nbWordsKnown) / totNbWords * 100);
+
 	}
 
 	////////////// *** DISPLAY ***
@@ -411,6 +399,10 @@ public abstract class Classifier {
 			}
 			System.out.println();
 		}
+	}
+
+	public int getNB_CLASSES() {
+		return NB_CLASSES;
 	}
 
 }
