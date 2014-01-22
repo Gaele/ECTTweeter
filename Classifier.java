@@ -18,11 +18,6 @@ public abstract class Classifier {
 	protected int NB_CLASSES = 4;
 
 	/**
-	 * % of the file to take to learn
-	 */
-	private final int NB_FILE_TO_TAKE_IN_LEARNING = 80;
-
-	/**
 	 * ??? contains number of word in the corpus.
 	 */
 	private final HashMap<String, Integer> dictionary;
@@ -53,7 +48,47 @@ public abstract class Classifier {
 		dictionary = new HashMap<String, Integer>();
 	}
 
-	public void calculate(final ArrayList<ArrayList<Tweet>> datas) {
+	public double crossValidation(final File f) {
+
+		final ArrayList<ArrayList<ArrayList<Tweet>>> datas = fileToArrayList(f, 10);
+		final int size = datas.size();
+		final double[] results = new double[size];
+		// for all test
+		for(int i=0; i<size; i++) {
+			final ArrayList<ArrayList<Tweet>> learning = new ArrayList<ArrayList<Tweet>>();
+			final ArrayList<ArrayList<Tweet>> test = new ArrayList<ArrayList<Tweet>>();
+			for(int classe=0; classe<NB_CLASSES; classe++) {
+				learning.add(classe, new ArrayList<Tweet>());
+				test.add(classe, new ArrayList<Tweet>());
+			}
+			for(int j=0; j<size; j++) {
+				if(i == j) {
+					// test.addAll(datas.get(j));
+					for(int classe=0; classe<NB_CLASSES; classe++) {
+						test.get(classe).addAll(datas.get(j).get(classe));
+					}
+				} else {
+					// learning.addAll(datas.get(j));
+					for(int classe=0; classe<NB_CLASSES; classe++) {
+						learning.get(classe).addAll(datas.get(j).get(classe));
+					}
+				}
+			}
+			// make calculus
+			calculate(learning, false);
+			results[i] = calculateClass(test, true);
+		}
+		// print results
+		int sum = 0;
+		for(int i=0; i<size; i++) {
+			sum += results[i];
+		}
+		System.out.println("Moyenne = " + (double)sum / size);
+
+		return (double)sum / size;
+	}
+
+	public void calculate(final ArrayList<ArrayList<Tweet>> datas, final boolean verbose) {
 		py = new double[NB_CLASSES];
 		alpha = new double[NB_CLASSES];
 		byw = new double[NB_CLASSES][dictionary.size()];
@@ -61,12 +96,18 @@ public abstract class Classifier {
 		final Long startCalculus = System.nanoTime();
 		calculatePy(datas);
 		final Long endPy = System.nanoTime();
-		System.out.println(">>> Time for Py: " + (endPy - startCalculus) / 1000000000 + " sec");
+		if(verbose) {
+			System.out.println(">>> Time for Py: " + (endPy - startCalculus) / 1000000000 + " sec");
+		}
 		calculateByw(datas);
 		final Long endByw = System.nanoTime();
-		System.out.println(">>> Time for Byw: " + (endByw - endPy) / 1000000000 + " sec");
+		if(verbose) {
+			System.out.println(">>> Time for Byw: " + (endByw - endPy) / 1000000000 + " sec");
+		}
 		calculateA();
-		System.out.println(">>> Time for A: " + (System.nanoTime() - endByw) / 1000000000 + " sec");
+		if(verbose) {
+			System.out.println(">>> Time for A: " + (System.nanoTime() - endByw) / 1000000000 + " sec");
+		}
 
 	}
 
@@ -74,7 +115,7 @@ public abstract class Classifier {
 	 * Print stats about the performance (performance per class + confusion matrix)
 	 */
 	public void printResults(final ArrayList<ArrayList<Tweet>> evaluation) {
-		calculateClass(evaluation);
+		calculateClass(evaluation, true);
 		calculateAndDisplayConfusionMatrix(evaluation);
 	}
 
@@ -107,6 +148,56 @@ public abstract class Classifier {
 			}
 		}
 		return datas;
+	}
+
+	/**
+	 * 
+	 * @param f
+	 * @return
+	 */
+	public ArrayList<ArrayList<ArrayList<Tweet>>> fileToArrayList(final File f, final int nbArrayToCreate) {
+		BufferedReader br = null;
+		String line;
+		ArrayList<ArrayList<Tweet>> datas = new ArrayList<ArrayList<Tweet>>();
+		final ArrayList<ArrayList<ArrayList<Tweet>>> res = new ArrayList<ArrayList<ArrayList<Tweet>>>();
+
+
+		try {
+			int nbLines = 0;
+			br = new BufferedReader(new FileReader(f));
+			while ((line = br.readLine()) != null) {
+				nbLines++;
+			}
+			final int nbDataPerArray = nbLines / nbArrayToCreate;
+
+			br = new BufferedReader(new FileReader(f));
+			int cpt = 0;
+			while ((line = br.readLine()) != null) {
+				if(cpt%nbDataPerArray == 0) {
+					if(cpt != 0) {
+						res.add(datas);
+					}
+					datas = new ArrayList<ArrayList<Tweet>>();
+					for (int i = 0; i < NB_CLASSES; i++) {
+						datas.add(new ArrayList<Tweet>());
+					}
+				}
+				final Tweet tweet = getTweet(line);
+				datas.get(tweet.getPolarite()).add(tweet);
+				cpt++;
+			}
+		} catch (final FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (final IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (final IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return res;
 	}
 
 	/**
@@ -179,7 +270,7 @@ public abstract class Classifier {
 
 	/////////////// **** CALCULUS ****
 
-	public void calculatePy(final ArrayList<ArrayList<Tweet>> datas) {
+	private void calculatePy(final ArrayList<ArrayList<Tweet>> datas) {
 		int total = 0;
 		int cpt = 0;
 		// for all class
@@ -196,7 +287,7 @@ public abstract class Classifier {
 	/**
 	 * calculate Beta
 	 */
-	public void calculateByw(final ArrayList<ArrayList<Tweet>> datas) {
+	private void calculateByw(final ArrayList<ArrayList<Tweet>> datas) {
 		// nb tweets in class i
 		final double[] dy = new double[NB_CLASSES];
 		for (int i = 0; i < NB_CLASSES; i++) {
@@ -245,7 +336,7 @@ public abstract class Classifier {
 	/**
 	 * Calculate Alpha
 	 */
-	public void calculateA() {
+	private void calculateA() {
 		for (int i = 0; i < NB_CLASSES; i++) {
 			// for all type we calculate a different alpha
 			alpha[i] = 0;
@@ -261,7 +352,7 @@ public abstract class Classifier {
 	 * @param t
 	 * @return
 	 */
-	public int calculatePxy2(final Tweet t) {
+	private int calculatePxy2(final Tweet t) {
 		final Integer[] tweetWords = t.getWords();
 		final List<Integer> tweetWordsSet = new LinkedList<Integer>();
 		for (final Integer tweetWord : tweetWords) {
@@ -305,8 +396,8 @@ public abstract class Classifier {
 	 * 
 	 * @param evaluationTweets
 	 */
-	public void calculateClass(
-			final ArrayList<ArrayList<Tweet>> evaluationTweets) {
+	public double calculateClass(
+			final ArrayList<ArrayList<Tweet>> evaluationTweets, final boolean verbose) {
 		double total = 0, ok = 0;
 		final int okStats[] = new int[NB_CLASSES];
 		final int totStats[] = new int[NB_CLASSES];
@@ -326,18 +417,21 @@ public abstract class Classifier {
 				totStats[t.getPolarite()]++;
 			}
 		}
-		System.out.println("taux erreur : " + (total - ok) * 100 / total + "%");
-		for (int i = 0; i < NB_CLASSES; i++) {
-			System.out.println("err Classe " + itn(i) + ": "
-					+ (totStats[i] - okStats[i]) + "/" + totStats[i] + " => "
-					+ (totStats[i] - okStats[i]) * 100 / totStats[i] + "%");
+		if(verbose) {
+			System.out.println("taux erreur : " + (total - ok) * 100 / total + "%");
+			for (int i = 0; i < NB_CLASSES; i++) {
+				System.out.println("err Classe " + itn(i) + ": "
+						+ (totStats[i] - okStats[i]) + "/" + totStats[i] + " => "
+						+ (totStats[i] - okStats[i]) * 100 / totStats[i] + "%");
+			}
+			// words known and unknown
+			final int nbWordsKnown = byw[0].length;
+			final int totNbWords = dictionary.size();
+			System.out.println("nb words: " + totNbWords);
+			System.out.println("unknown words: " + ((double)totNbWords - nbWordsKnown) / totNbWords * 100);
 		}
-		// words known and unknown
-		final int nbWordsKnown = byw[0].length;
-		final int totNbWords = dictionary.size();
-		System.out.println("nb words: " + totNbWords);
-		System.out.println("unknown words: " + ((double)totNbWords - nbWordsKnown) / totNbWords * 100);
 
+		return (total - ok) * 100 / total;
 	}
 
 	////////////// *** DISPLAY ***
