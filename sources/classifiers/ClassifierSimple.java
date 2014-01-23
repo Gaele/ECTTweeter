@@ -1,7 +1,13 @@
+package sources.classifiers;
 
-public class ClassifierProject extends Classifier {
+import sources.Classifier;
 
-	public ClassifierProject() {
+
+
+
+public class ClassifierSimple extends Classifier {
+
+	public ClassifierSimple() {
 		super();
 		NB_CLASSES = 11;
 	}

@@ -1,7 +1,10 @@
+package sources.classifiers;
 
-public class Classifier01 extends Classifier {
+import sources.Classifier;
 
-	public Classifier01() {
+public class ClassifierTweet extends Classifier {
+
+	public ClassifierTweet() {
 		super();
 		NB_CLASSES = 4;
 	}
