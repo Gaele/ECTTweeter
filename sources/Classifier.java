@@ -47,8 +47,7 @@ public abstract class Classifier {
 		dictionary = new HashMap<String, Integer>();
 	}
 
-	public double crossValidation(final File f, final double k2) {
-
+	public double crossValidation(final File f, final double k2, final boolean verbose) {
 		final ArrayList<ArrayList<ArrayList<Tweet>>> datas = fileToArrayList(f, 10);
 		final int size = datas.size();
 		final double[] results = new double[size];
@@ -74,8 +73,8 @@ public abstract class Classifier {
 				}
 			}
 			// make calculus
-			calculate(learning, k2, false);
-			results[i] = calculateClass(test, false);
+			calculate(learning, k2, verbose);
+			results[i] = calculateClass(test, verbose);
 		}
 		// print results
 		int sum = 0;
@@ -83,7 +82,6 @@ public abstract class Classifier {
 			sum += results[i];
 		}
 		//		System.out.println("Moyenne = " + (double)sum / size);
-
 		return (double)sum / size;
 	}
 
@@ -168,7 +166,7 @@ public abstract class Classifier {
 				nbLines++;
 			}
 			final int nbDataPerArray = nbLines / nbArrayToCreate;
-
+			br.close();
 			br = new BufferedReader(new FileReader(f));
 			int cpt = 0;
 			while ((line = br.readLine()) != null) {

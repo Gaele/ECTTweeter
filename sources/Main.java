@@ -28,7 +28,8 @@ public class Main {
 		//				"src/data/train.txt");
 		final File f = new File(
 				"src/dataProject/train.txt");
-		ClassifierManager.simpleClassifier();
+		//		ClassifierManager.simpleClassifier();
+		ClassifierManager.regionClassifier();
 
 		//		final Classifier classifier = new ClassifierProject();
 		//		final double optimum = ClassifierManager.calculateMin(classifier, f, 0.01, 1.0, 0.001);

@@ -6,7 +6,9 @@ public class ClassifierRegion extends Classifier {
 
 	public ClassifierRegion() {
 		super();
-		NB_CLASSES = 11;
+		// split into Asian / European
+		// 0 => European, 1 => Asian
+		NB_CLASSES = 2;
 	}
 
 	@Override
@@ -60,23 +62,23 @@ public class ClassifierRegion extends Classifier {
 		} else if(polarite.equals("CHI")) {
 			return 1;
 		} else if(polarite.equals("FRE")) {
-			return 2;
+			return 0;
 		} else if(polarite.equals("GER")) {
-			return 3;
+			return 0;
 		} else if(polarite.equals("HIN")) {
-			return 4;
+			return 1;
 		} else if(polarite.equals("ITA")) {
-			return 5;
+			return 0;
 		} else if(polarite.equals("JPN")) {
-			return 6;
+			return 1;
 		} else if(polarite.equals("KOR")) {
-			return 7;
+			return 1;
 		} else if(polarite.equals("SPA")) {
-			return 8;
+			return 0;
 		} else if(polarite.equals("TEL")) {
-			return 9;
+			return 1;
 		} else if(polarite.equals("TUR")) {
-			return 10;
+			return 1;
 		} else {
 			return -1;
 		}
@@ -92,27 +94,9 @@ public class ClassifierRegion extends Classifier {
 	public String itn(final Integer polarity) {
 		switch(polarity) {
 		case 0:
-			return "ARA";
+			return "EURO";
 		case 1:
-			return "CHI";
-		case 2:
-			return "FRE";
-		case 3:
-			return "GER";
-		case 4:
-			return "HIN";
-		case 5:
-			return "ITA";
-		case 6:
-			return "JPN";
-		case 7:
-			return "KOR";
-		case 8:
-			return "SPA";
-		case 9:
-			return "TEL";
-		case 10:
-			return "TUR";
+			return "ASI";
 		default:
 			return "???";
 		}
