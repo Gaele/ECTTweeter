@@ -28,13 +28,17 @@ public class Main {
 		final File f = new File(
 				"src/dataProject/train.txt");
 		final Classifier classifier = new ClassifierProject();
-		classifier.crossValidation(f);
+
+		final double optimum = ClassifierManager.calculateMin(classifier, f, 0.01, 1.0, 0.001);
+		System.out.println("best k = "+optimum);
+		System.out.println("==> " + classifier.crossValidation(f, 0.46342773437499996));
+
 		//		final ArrayList<ArrayList<Tweet>> datas = classifier.fileToArrayList(f);
-		final Long endLoad = System.nanoTime();
+		//		final Long endLoad = System.nanoTime();
 		//		System.out.println("> Load done in : " + (endLoad - start) / 1000000000 + " sec");
 
 		// calculus
-		//		classifier.calculate(datas);
+		//		classifier.calculate(datas, 0.1, false);
 		//		final Long endCalculus = System.nanoTime();
 		//		System.out.println("> Calculus done in : " + (endCalculus - endLoad) / 1000000000 + " sec");
 
@@ -44,4 +48,5 @@ public class Main {
 		//		System.out.println("> Stats done in : " + (System.nanoTime() - endCalculus) / 1000000000 + " sec");
 		System.out.println("\n\n> TOTAL TIME : " + (System.nanoTime() - start) / 1000000000 + " sec");
 	}
+
 }

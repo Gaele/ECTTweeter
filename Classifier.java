@@ -10,8 +10,6 @@ import java.util.List;
 
 public abstract class Classifier {
 
-	private final double k = 0.1;
-
 	/**
 	 * Number of classes to consider
 	 */
@@ -48,7 +46,7 @@ public abstract class Classifier {
 		dictionary = new HashMap<String, Integer>();
 	}
 
-	public double crossValidation(final File f) {
+	public double crossValidation(final File f, final double k2) {
 
 		final ArrayList<ArrayList<ArrayList<Tweet>>> datas = fileToArrayList(f, 10);
 		final int size = datas.size();
@@ -75,20 +73,20 @@ public abstract class Classifier {
 				}
 			}
 			// make calculus
-			calculate(learning, false);
-			results[i] = calculateClass(test, true);
+			calculate(learning, k2, false);
+			results[i] = calculateClass(test, false);
 		}
 		// print results
 		int sum = 0;
 		for(int i=0; i<size; i++) {
 			sum += results[i];
 		}
-		System.out.println("Moyenne = " + (double)sum / size);
+		//		System.out.println("Moyenne = " + (double)sum / size);
 
 		return (double)sum / size;
 	}
 
-	public void calculate(final ArrayList<ArrayList<Tweet>> datas, final boolean verbose) {
+	public void calculate(final ArrayList<ArrayList<Tweet>> datas, final double k2, final boolean verbose) {
 		py = new double[NB_CLASSES];
 		alpha = new double[NB_CLASSES];
 		byw = new double[NB_CLASSES][dictionary.size()];
@@ -99,7 +97,7 @@ public abstract class Classifier {
 		if(verbose) {
 			System.out.println(">>> Time for Py: " + (endPy - startCalculus) / 1000000000 + " sec");
 		}
-		calculateByw(datas);
+		calculateByw(datas, k2);
 		final Long endByw = System.nanoTime();
 		if(verbose) {
 			System.out.println(">>> Time for Byw: " + (endByw - endPy) / 1000000000 + " sec");
@@ -287,7 +285,7 @@ public abstract class Classifier {
 	/**
 	 * calculate Beta
 	 */
-	private void calculateByw(final ArrayList<ArrayList<Tweet>> datas) {
+	private void calculateByw(final ArrayList<ArrayList<Tweet>> datas, final double k2) {
 		// nb tweets in class i
 		final double[] dy = new double[NB_CLASSES];
 		for (int i = 0; i < NB_CLASSES; i++) {
@@ -325,9 +323,9 @@ public abstract class Classifier {
 			for (final int wordNb : dictionary.values()) {
 				final Integer wordOcc = occurrences.get(classNb).get(wordNb);
 				if (wordOcc == null) {
-					byw[classNb][wordNb] = k / dy[classNb];
+					byw[classNb][wordNb] = k2 / dy[classNb];
 				} else {
-					byw[classNb][wordNb] = Math.max(k, Math.min(wordOcc, dy[classNb] - k)) / dy[classNb];
+					byw[classNb][wordNb] = Math.max(k2, Math.min(wordOcc, dy[classNb] - k2)) / dy[classNb];
 				}
 			}
 		}
