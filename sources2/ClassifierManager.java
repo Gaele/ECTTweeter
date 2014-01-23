@@ -1,9 +1,9 @@
-package sources;
+package sources2;
 import java.io.File;
 import java.util.ArrayList;
 
-import sources.classifiers.ClassifierRegion;
-import sources.classifiers.ClassifierSimple;
+import sources2.classifiers.ClassifierRegion;
+import sources2.classifiers.ClassifierSimple;
 
 public class ClassifierManager {
 

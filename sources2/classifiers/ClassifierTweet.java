@@ -1,12 +1,12 @@
-package sources.classifiers;
+package sources2.classifiers;
 
-import sources.Classifier;
+import sources2.Classifier;
 
-public class ClassifierSimple extends Classifier {
+public class ClassifierTweet extends Classifier {
 
-	public ClassifierSimple() {
+	public ClassifierTweet() {
 		super();
-		NB_CLASSES = 11;
+		NB_CLASSES = 4;
 	}
 
 	@Override
@@ -55,28 +55,14 @@ public class ClassifierSimple extends Classifier {
 	 */
 	@Override
 	public Integer nti(final String polarite) {
-		if(polarite.equals("ARA")) {
+		if(polarite.equals("positive")) {
 			return 0;
-		} else if(polarite.equals("CHI")) {
+		} else if(polarite.equals("negative")) {
 			return 1;
-		} else if(polarite.equals("FRE")) {
+		} else if(polarite.equals("neutral")) {
 			return 2;
-		} else if(polarite.equals("GER")) {
+		} else if(polarite.equals("irrelevant")) {
 			return 3;
-		} else if(polarite.equals("HIN")) {
-			return 4;
-		} else if(polarite.equals("ITA")) {
-			return 5;
-		} else if(polarite.equals("JPN")) {
-			return 6;
-		} else if(polarite.equals("KOR")) {
-			return 7;
-		} else if(polarite.equals("SPA")) {
-			return 8;
-		} else if(polarite.equals("TEL")) {
-			return 9;
-		} else if(polarite.equals("TUR")) {
-			return 10;
 		} else {
 			return -1;
 		}
@@ -92,40 +78,14 @@ public class ClassifierSimple extends Classifier {
 	public String itn(final Integer polarity) {
 		switch(polarity) {
 		case 0:
-			return "ARA";
+			return "pos";
 		case 1:
-			return "CHI";
+			return "neg";
 		case 2:
-			return "FRE";
-		case 3:
-			return "GER";
-		case 4:
-			return "HIN";
-		case 5:
-			return "ITA";
-		case 6:
-			return "JPN";
-		case 7:
-			return "KOR";
-		case 8:
-			return "SPA";
-		case 9:
-			return "TEL";
-		case 10:
-			return "TUR";
+			return "neu";
 		default:
-			return "???";
+			return "irr";
 		}
 	}
-
-	//	@Override
-	//	public Integer ntiDerive(final String polarity) {
-	//		return nti(polarity);
-	//	}
-
-	//	@Override
-	//	public String itnDerive(final Integer polarity) {
-	//		return itn(polarity);
-	//	}
 
 }

@@ -1,6 +1,6 @@
-package sources.classifiers;
+package sources2.classifiers;
 
-import sources.Classifier;
+import sources2.Classifier;
 
 public class ClassifierSimple extends Classifier {
 
