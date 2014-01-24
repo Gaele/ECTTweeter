@@ -1,17 +1,23 @@
-package sources2;
+package sources2.managers;
 import java.util.ArrayList;
 
+import sources2.AbstractManager;
+import sources2.Classifier;
+import sources2.Tweet;
 import sources2.classifiers.ClassifierAsianEurope;
+import sources2.classifiers.ClassifierAsie;
+import sources2.classifiers.ClassifierEurope;
 import sources2.classifiers.ClassifierSimple;
 
-public class ClassifierManager extends AbstractManager {
+public class ManagerAsieEurope extends AbstractManager {
 
 	final ArrayList<ArrayList<Tweet>> datas;
 	Classifier region = new ClassifierAsianEurope();
-	Classifier simple = new ClassifierSimple();
-	ArrayList<ArrayList<Tweet>> results = new ArrayList<ArrayList<Tweet>>();
+	//	Classifier simple = new ClassifierSimple();
+	Classifier europe = new ClassifierEurope();
+	Classifier asia = new ClassifierAsie();
 
-	public ClassifierManager() {
+	public ManagerAsieEurope() {
 		datas = null;
 		NB_CLASSES = 11;
 	}
@@ -20,22 +26,45 @@ public class ClassifierManager extends AbstractManager {
 	public void learn(final ArrayList<ArrayList<Tweet>> datas, final double k, final boolean verbose) {
 		// make all the classifiers learn
 		region.learn(this, datas, k, verbose);
+		europe.learn(this, datas, k, verbose);
+		asia.learn(this, datas, k, verbose);
 		//		simple.learn(this, datas, k, verbose);
 	}
 
 	@Override
-	public void work(final ArrayList<Tweet> dataTest, final boolean verbose) {
-		results = region.work(dataTest);
-		results = region.work(dataTest);
-		//		results = simple.work(dataTest);
+	public ArrayList<ArrayList<Tweet>> work(final ArrayList<Tweet> dataTest, final boolean verbose) {
+		final ArrayList<ArrayList<Tweet>> results = new ArrayList<ArrayList<Tweet>>();
+		for(int i=0; i<NB_CLASSES; i++) {
+			results.add(new ArrayList<Tweet>());
+		}
+		final ArrayList<ArrayList<Tweet>> localResult;// = new ArrayList<ArrayList<Tweet>>();
+		localResult = region.work(dataTest, true);
+
+		final ArrayList<ArrayList<Tweet>> europeResult = europe.work(localResult.get(0), false);
+		results.get(2).addAll(europeResult.get(0));
+		results.get(3).addAll(europeResult.get(1));
+		results.get(5).addAll(europeResult.get(2));
+		results.get(8).addAll(europeResult.get(3));
+
+		final ArrayList<ArrayList<Tweet>> asianResult = asia.work(localResult.get(1), false);
+		results.get(0).addAll(asianResult.get(0));
+		results.get(1).addAll(asianResult.get(1));
+		results.get(4).addAll(asianResult.get(2));
+		results.get(6).addAll(asianResult.get(3));
+		results.get(7).addAll(asianResult.get(4));
+		results.get(9).addAll(asianResult.get(5));
+		results.get(10).addAll(asianResult.get(6));
+
+		return results;
 	}
 
 	@Override
-	public double check(final boolean verbose) {
-		final double accuracy = region.check(results, verbose);
+	public double check(final ArrayList<ArrayList<Tweet>> res, final boolean verbose) {
+		final Classifier simple = new ClassifierSimple();
+		final double accuracy = simple.check(res, verbose);
 		if(verbose) {
-			region.calculateAndDisplayConfusionMatrix(
-					results);
+			simple.calculateAndDisplayConfusionMatrix(
+					res);
 		}
 		//		final double accuracy = simple.check(results, verbose);
 		//		if(verbose) {

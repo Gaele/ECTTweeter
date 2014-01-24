@@ -212,13 +212,13 @@ public abstract class Classifier {
 		return classe;
 	}
 
-	public ArrayList<ArrayList<Tweet>> work(final ArrayList<Tweet> tweets) {
+	public ArrayList<ArrayList<Tweet>> work(final ArrayList<Tweet> tweets, final boolean checkUsable) {
 		final ArrayList<ArrayList<Tweet>> result = new ArrayList<ArrayList<Tweet>>();
 		for(int i=0; i<NB_CLASSES_DERIVEES; i++) {
 			result.add(new ArrayList<Tweet>());
 		}
 		for (final Tweet t : tweets) {
-			if(!isUsable(t)) {
+			if(checkUsable && !isUsable(t)) {
 				continue;
 			}
 			final int classe = calculatePxy2(t);
@@ -263,10 +263,10 @@ public abstract class Classifier {
 						+ (totStats[i] - okStats[i]) * 100 / totStats[i] + "%");
 			}
 			// words known and unknown
-			final int nbWordsKnown = byw[0].length;
-			final int totNbWords = localDictionary.size();
-			System.out.println("nb words: " + totNbWords);
-			System.out.println("unknown words: " + ((double)totNbWords - nbWordsKnown) / totNbWords * 100);
+			//			final int nbWordsKnown = byw[0].length;
+			//			final int totNbWords = localDictionary.size();
+			//			System.out.println("nb words: " + totNbWords);
+			//			System.out.println("unknown words: " + ((double)totNbWords - nbWordsKnown) / totNbWords * 100);
 		}
 
 		return (total - ok) * 100 / total;

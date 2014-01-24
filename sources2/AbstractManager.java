@@ -22,9 +22,9 @@ public abstract class AbstractManager {
 
 	public abstract void learn(ArrayList<ArrayList<Tweet>> datas, final double k, final boolean verbose);
 
-	public abstract void work(final ArrayList<Tweet> dataTest, final boolean verbose);
+	public abstract ArrayList<ArrayList<Tweet>> work(final ArrayList<Tweet> dataTest, final boolean verbose);
 
-	public abstract double check(boolean verbose);
+	public abstract double check(final ArrayList<ArrayList<Tweet>> res, final boolean verbose);
 
 	public abstract String filter(String text);
 
@@ -32,7 +32,7 @@ public abstract class AbstractManager {
 
 	public abstract String itn(final Integer polarite);
 
-	public double crossValidation(final Classifier c, final File f, final double k, final boolean verbose) {
+	public double crossValidation(final File f, final double k, final boolean verbose) {
 		final ArrayList<ArrayList<ArrayList<Tweet>>> datas = fileToArrayList(f, 10);
 		final int size = datas.size();
 		final double[] results = new double[size];
@@ -57,13 +57,10 @@ public abstract class AbstractManager {
 				}
 			}
 			// make calculus
-			c.learn(this, learning, k, verbose);
+			learn(learning, k, verbose);
 			//			results[i] = c.calculateClass(test, verbose);
-			final ArrayList<ArrayList<Tweet>> res = c.work(test);
-			results[i] = c.check(res, verbose);
-			if(verbose) {
-				c.calculateAndDisplayConfusionMatrix(res);
-			}
+			final ArrayList<ArrayList<Tweet>> res = work(test, true);
+			results[i] = check(res, verbose);
 			System.out.print("-");
 			System.out.flush();
 		}
@@ -245,26 +242,26 @@ public abstract class AbstractManager {
 	 * @param limit the accuracy of the calculus
 	 * @return
 	 */
-	public double calculateMin(final Classifier classifier, final File trainFile, final double min, final double max, final double limit) {
+	public double calculateMin(final File trainFile, final double min, final double max, final double limit) {
 		final double middle = (max + min) / 2;
 		if(middle - min < limit) {
 			return middle;
 		}
 		final double littleMiddle = (middle + min) / 2;
 		final double bigMiddle = (max + middle) / 2;
-		final double littleMiddleValue = crossValidation(classifier, trainFile, littleMiddle, false);
-		final double bigMiddleValue = crossValidation(classifier, trainFile, bigMiddle, false);
+		final double littleMiddleValue = crossValidation(trainFile, littleMiddle, false);
+		final double bigMiddleValue = crossValidation(trainFile, bigMiddle, false);
 
 		if(littleMiddleValue < bigMiddleValue) {
 			System.out.println("k="+littleMiddle+" => "+littleMiddleValue+" *");
 			System.out.println("k="+bigMiddle+" => "+bigMiddleValue);
 			System.out.println("-----");
-			return calculateMin(classifier, trainFile, min, middle, limit);
+			return calculateMin(trainFile, min, middle, limit);
 		} else {
 			System.out.println("k="+littleMiddle+" => "+littleMiddleValue);
 			System.out.println("k="+bigMiddle+" => "+bigMiddleValue+" *");
 			System.out.println("-----");
-			return calculateMin(classifier, trainFile, middle, max, limit);
+			return calculateMin(trainFile, middle, max, limit);
 		}
 
 	}
