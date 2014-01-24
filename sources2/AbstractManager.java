@@ -24,7 +24,7 @@ public abstract class AbstractManager {
 
 	public abstract void work(final ArrayList<Tweet> dataTest, final boolean verbose);
 
-	public abstract void check();
+	public abstract double check(boolean verbose);
 
 	public abstract String filter(String text);
 
@@ -39,16 +39,15 @@ public abstract class AbstractManager {
 		// for all test
 		for(int i=0; i<size; i++) {
 			final ArrayList<ArrayList<Tweet>> learning = new ArrayList<ArrayList<Tweet>>();
-			final ArrayList<ArrayList<Tweet>> test = new ArrayList<ArrayList<Tweet>>();
+			final ArrayList<Tweet> test = new ArrayList<Tweet>();
 			for(int classe=0; classe<NB_CLASSES; classe++) {
 				learning.add(classe, new ArrayList<Tweet>());
-				test.add(classe, new ArrayList<Tweet>());
 			}
 			for(int j=0; j<size; j++) {
 				if(i == j) {
 					// test.addAll(datas.get(j));
 					for(int classe=0; classe<NB_CLASSES; classe++) {
-						test.get(classe).addAll(datas.get(j).get(classe));
+						test.addAll(datas.get(j).get(classe));
 					}
 				} else {
 					// learning.addAll(datas.get(j));
@@ -59,7 +58,12 @@ public abstract class AbstractManager {
 			}
 			// make calculus
 			c.learn(this, learning, k, verbose);
-			results[i] = c.calculateClass(test, verbose);
+			//			results[i] = c.calculateClass(test, verbose);
+			final ArrayList<ArrayList<Tweet>> res = c.work(test);
+			results[i] = c.check(res, verbose);
+			if(verbose) {
+				c.calculateAndDisplayConfusionMatrix(res);
+			}
 		}
 		// print results
 		int sum = 0;

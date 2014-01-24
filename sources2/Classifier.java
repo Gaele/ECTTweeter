@@ -1,9 +1,6 @@
 package sources2;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 
 public abstract class Classifier {
 
@@ -22,7 +19,9 @@ public abstract class Classifier {
 	 */
 	//	protected int[] toClasses;
 
-	private final HashSet<Integer> localDictionary;
+	//	private final HashSet<Integer> localDictionary;
+	private final HashMap<Integer, Integer> localDictionary;
+	protected Integer nextLocalId = 0;
 
 	/**
 	 * for the calculus
@@ -35,18 +34,22 @@ public abstract class Classifier {
 	 * init dico and lists of tweets
 	 */
 	public Classifier() {
-		localDictionary = new HashSet<Integer>();
+		//		localDictionary = new HashSet<Integer>();
+		localDictionary = new HashMap<Integer, Integer>();
 	}
 
 	public abstract boolean isUsable(Tweet t);
 
-	public abstract ArrayList<ArrayList<Tweet>> preTraitement(final AbstractManager man, final ArrayList<ArrayList<Tweet>> datas, HashSet<Integer> localDictionary);
+	public abstract ArrayList<ArrayList<Tweet>> preTraitement(final AbstractManager man, final ArrayList<ArrayList<Tweet>> datas, HashMap<Integer, Integer> localDictionary);
 
 	public void learn(final AbstractManager man, final ArrayList<ArrayList<Tweet>> globalDatas, final double k, final boolean verbose) {
-
 		// initialises local dico
 		final Long startCalculus = System.nanoTime();
+		localDictionary.clear();
+		nextLocalId = 0;
 		final ArrayList<ArrayList<Tweet>> datas = preTraitement(man, globalDatas, localDictionary);
+		System.out.println("lastInsertId: "+nextLocalId);
+		System.out.println("dico.size: "+localDictionary.size());
 		final Long endLocalDico = System.nanoTime();
 		if(verbose) {
 			System.out.println(">>> Time for localDico: " + (endLocalDico - startCalculus) / 1000000000 + " sec");
@@ -149,7 +152,8 @@ public abstract class Classifier {
 		}
 		// filling of the beta table
 		for (classNb = 0; classNb < NB_CLASSES_DERIVEES; classNb++) {
-			for (final int wordNb : man.getDictionary().values()) {
+			for (final int wordNb : localDictionary.values()) {
+
 				final Integer wordOcc = occurrences.get(classNb).get(wordNb);
 				if (wordOcc == null) {
 					byw[classNb][wordNb] = k2 / dy[classNb];
@@ -167,7 +171,7 @@ public abstract class Classifier {
 		for (int i = 0; i < NB_CLASSES_DERIVEES; i++) {
 			// for all type we calculate a different alpha
 			alpha[i] = 0;
-			for (final Integer w : man.getDictionary().values()) {
+			for (final Integer w : localDictionary.values()) {
 				alpha[i] += Math.log(1 - byw[i][w]);
 			}
 		}
@@ -180,42 +184,33 @@ public abstract class Classifier {
 	 * @return
 	 */
 	private int calculatePxy2(final Tweet t) {
-		final Integer[] tweetWords = t.getWords();
-		final List<Integer> tweetWordsSet = new LinkedList<Integer>();
-		for (final Integer tweetWord : tweetWords) {
-			tweetWordsSet.add(tweetWord);
-		}
 		double logPXY;
 		int classe = -1;
-		double maxLogPXY = -Double.MAX_VALUE;
+		double maxLogPXY = Double.NEGATIVE_INFINITY;
+		// for all class
 		for (int i = 0; i <= NB_CLASSES_DERIVEES - 1; i++) {
-			// for all class
 			logPXY = alpha[i];
-
+			//			System.out.println("alpha="+alpha[i]);
 			for(final int word : t.getWords()) {
 				try {
 					logPXY += Math.log(byw[i][word])
 							- Math.log(1 - byw[i][word]);
+					//					System.out.println("actual logPXY: "+logPXY);
 				} catch(final ArrayIndexOutOfBoundsException e) {
-					//					boolean found = false;
-					//					for(final Entry<String, Integer> data : dictionary.entrySet()) {
-					//						if(data.getValue() == word) {
-					//							System.out.println("Unknown word " + data.getKey());
-					//							found = true;
-					//						}
-					//					}
-					//					if(!found) {
-					//						System.out.println("BUG !!! " + word);
-					//					}
+					//					e.printStackTrace();
 				}
 			}
 			final double nouvelleValeur = logPXY + py[i];
+			//			System.out.println("nouvelleValeur: " + nouvelleValeur);
+			//			System.out.println("logPXY: " + logPXY);
+			//			System.out.println("py: " + py[i]);
 			if (maxLogPXY < nouvelleValeur) {
 				classe = i;
 				maxLogPXY = nouvelleValeur;
 			}
 		}
 		//		System.out.println("Unknown words: " + nbUnknownWords);
+		//		System.out.println(classe);
 		return classe;
 	}
 

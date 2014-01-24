@@ -1,13 +1,13 @@
 package sources2;
 import java.util.ArrayList;
 
-import sources2.classifiers.ClassifierRegion;
+import sources2.classifiers.ClassifierAsianEurope;
 import sources2.classifiers.ClassifierSimple;
 
 public class ClassifierManager extends AbstractManager {
 
 	final ArrayList<ArrayList<Tweet>> datas;
-	Classifier region = new ClassifierRegion();
+	Classifier region = new ClassifierAsianEurope();
 	Classifier simple = new ClassifierSimple();
 	ArrayList<ArrayList<Tweet>> results = new ArrayList<ArrayList<Tweet>>();
 
@@ -26,17 +26,23 @@ public class ClassifierManager extends AbstractManager {
 	@Override
 	public void work(final ArrayList<Tweet> dataTest, final boolean verbose) {
 		results = region.work(dataTest);
+		results = region.work(dataTest);
 		//		results = simple.work(dataTest);
 	}
 
 	@Override
-	public void check() {
-		region.check(results, true);
-		region.calculateAndDisplayConfusionMatrix(
-				results);
-		//		simple.check(results, true);
-		//		simple.calculateAndDisplayConfusionMatrix(
-		//				results);
+	public double check(final boolean verbose) {
+		final double accuracy = region.check(results, verbose);
+		if(verbose) {
+			region.calculateAndDisplayConfusionMatrix(
+					results);
+		}
+		//		final double accuracy = simple.check(results, verbose);
+		//		if(verbose) {
+		//			simple.calculateAndDisplayConfusionMatrix(
+		//					results);
+		//		}
+		return accuracy;
 	}
 
 	@Override

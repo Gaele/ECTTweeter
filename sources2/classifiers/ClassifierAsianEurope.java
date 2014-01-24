@@ -7,25 +7,25 @@ import sources2.AbstractManager;
 import sources2.Classifier;
 import sources2.Tweet;
 
-public class ClassifierRegion extends Classifier {
+public class ClassifierAsianEurope extends Classifier {
 
-	public ClassifierRegion() {
+	public ClassifierAsianEurope() {
 		super();
 		// split into Asian / European
-		// 0 => European, 1=>EastAsia, 2=>Indian
-		NB_CLASSES_DERIVEES = 3;
+		// 0 => European, 1 => Asian
+		NB_CLASSES_DERIVEES = 2;
 
 		toDerivatedClasses = new Integer[11];
-		toDerivatedClasses[0] = 0;// ARA
+		toDerivatedClasses[0] = 1;// ARA
 		toDerivatedClasses[1] = 1;// CHI
 		toDerivatedClasses[2] = 0;// FRE
 		toDerivatedClasses[3] = 0;// GER
-		toDerivatedClasses[4] = 2;// HIN
+		toDerivatedClasses[4] = 1;// HIN
 		toDerivatedClasses[5] = 0;// ITA
 		toDerivatedClasses[6] = 1;// JPN
 		toDerivatedClasses[7] = 1;// KOR
 		toDerivatedClasses[8] = 0;// SPA
-		toDerivatedClasses[9] = 2;// TEL
+		toDerivatedClasses[9] = 1;// TEL
 		toDerivatedClasses[10] = 1;// TUR
 	}
 
@@ -37,7 +37,7 @@ public class ClassifierRegion extends Classifier {
 	@Override
 	public Integer nti(final String polarite) {
 		if(polarite.equals("ARA")) {
-			return 0;
+			return 1;
 		} else if(polarite.equals("CHI")) {
 			return 1;
 		} else if(polarite.equals("FRE")) {
@@ -45,7 +45,7 @@ public class ClassifierRegion extends Classifier {
 		} else if(polarite.equals("GER")) {
 			return 0;
 		} else if(polarite.equals("HIN")) {
-			return 2;
+			return 1;
 		} else if(polarite.equals("ITA")) {
 			return 0;
 		} else if(polarite.equals("JPN")) {
@@ -55,7 +55,7 @@ public class ClassifierRegion extends Classifier {
 		} else if(polarite.equals("SPA")) {
 			return 0;
 		} else if(polarite.equals("TEL")) {
-			return 2;
+			return 1;
 		} else if(polarite.equals("TUR")) {
 			return 1;
 		} else {
@@ -73,11 +73,9 @@ public class ClassifierRegion extends Classifier {
 	public String itn(final Integer polarity) {
 		switch(polarity) {
 		case 0:
-			return "Euro";
+			return "EURO";
 		case 1:
-			return "EstASI";
-		case 2:
-			return "Inde";
+			return "ASI";
 		default:
 			return "???";
 		}
@@ -105,7 +103,6 @@ public class ClassifierRegion extends Classifier {
 			localDatas.get(toDerivatedClasses[i]).addAll(classe);
 			for(final Tweet t : classe) {
 				for(final Integer word : t.getWords()) {
-					//					localDictionary.add(word);
 					final Integer res = localDictionary.get(word);
 					if(res == null) {
 						localDictionary.put(word, nextLocalId);

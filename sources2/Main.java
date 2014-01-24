@@ -1,7 +1,8 @@
 package sources2;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+
+import sources2.classifiers.ClassifierSimple;
 
 /**
  * from this page : http://perso.limsi.fr/lavergne
@@ -32,11 +33,16 @@ public class Main {
 		final File test = new File(
 				"src/dataProject/dev.txt");
 		final AbstractManager manager = new ClassifierManager();
-		final ArrayList<ArrayList<Tweet>> datas = manager.fileToArrayList(learn);
-		manager.learn(datas, 0.1, true);
-		final ArrayList<Tweet> dataTest = manager.fileToSimpleArrayList(test);
-		manager.work(dataTest, true);
-		manager.check();
+		//		final ArrayList<ArrayList<Tweet>> datas = manager.fileToArrayList(learn);
+		//		manager.learn(datas, 0.1, true);
+		//		final ArrayList<Tweet> dataTest = manager.fileToSimpleArrayList(test);
+		//		manager.work(dataTest, true);
+		//		manager.check(true);
+
+		// other test
+		final Classifier asianEurope = new ClassifierSimple();
+		final double accuracy = manager.crossValidation(asianEurope, learn, 0.1, true);
+		System.out.println("accuracy: " + accuracy);
 
 		//		final Classifier classifier = new ClassifierProject();
 		//		final double optimum = ClassifierManager.calculateMin(classifier, f, 0.01, 1.0, 0.001);

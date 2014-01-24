@@ -1,0 +1,4 @@
+(irrelevant,microsoft) #Microsoft convie
+(neutral,google) Calling All
+(negative,apple) @NickTheFNicon
+(positive,microsoft) #Microsoft Research

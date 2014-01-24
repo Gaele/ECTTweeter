@@ -1,7 +1,7 @@
 package sources2.classifiers;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 
 import sources2.AbstractManager;
 import sources2.Classifier;
@@ -97,8 +97,25 @@ public class ClassifierSimple extends Classifier {
 
 	@Override
 	public ArrayList<ArrayList<Tweet>> preTraitement(final AbstractManager man,
-			final ArrayList<ArrayList<Tweet>> datas, final HashSet<Integer> localDictionary) {
-		localDictionary.addAll(man.getDictionary().values());
+			final ArrayList<ArrayList<Tweet>> datas, final HashMap<Integer, Integer> localDictionary) {
+		//		localDictionary.putAll(man.getDictionary());
+		int i=0;
+		for(final ArrayList<Tweet> classe : datas) {
+			if(toDerivatedClasses[i] < 0) {
+				continue;
+			}
+			//			localDatas.get(toDerivatedClasses[i]).addAll(classe);
+			for(final Tweet t : classe) {
+				for(final Integer word : t.getWords()) {
+					final Integer res = localDictionary.get(word);
+					if(res == null) {
+						localDictionary.put(word, nextLocalId);
+						nextLocalId++;
+					}
+				}
+			}
+			i++;
+		}
 		return datas;
 	}
 
