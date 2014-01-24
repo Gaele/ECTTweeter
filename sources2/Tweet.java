@@ -3,44 +3,31 @@ package sources2;
 import java.util.HashSet;
 
 /**
- * Represents a Tweet
+ * Represents a piece of data which can be a Tweet, a text... It has 2 tags.
  * 
- * @author vvanhec
+ * @author vincent
  * 
  */
 public class Tweet {
 
-	private int polarite;
-	private String marque;
+	/**
+	 * The main information to analyse
+	 */
+	private final int polarite;
 
-	private Integer[] words;
-	//	HashMap<Integer, Boolean> map; ////////////////////
+	/**
+	 * The second information to analyse which can help us to forecast {@link #polarite}
+	 */
+	private final String marque;
 
+	/**
+	 * The datas used to forecast the {@link #polarite}
+	 */
+	private final Integer[] words;
 
 	public Tweet(final int polarite, final String marque, final Integer[] w) {
 		this.polarite = polarite;
 		this.marque = marque;
-
-		// get unique word with map
-		//		map = new HashMap<Integer, Boolean>(); ////////////////////////
-		//		for (final Integer element : w) {
-		//			if(!map.containsKey(element)) {
-		//				map.put(element, true);
-		//			}
-		//		}
-
-		// Check for doubles
-		//		 => it seems that it's ok
-		//				final LinkedList<Integer> list = new LinkedList<Integer>();
-		//				for(final Entry<Integer, Boolean> word : map.entrySet()) {
-		//					if(list.contains(word.getKey())) {
-		//						System.out.println("DOUBLE !!!!");
-		//					}
-		//					list.add(word.getKey());
-		//				}
-		//				list.clear();
-
-
 		// get unique words
 		final HashSet<Integer> hs = new HashSet<Integer>();
 		for (final Integer element : w) {
@@ -55,8 +42,12 @@ public class Tweet {
 
 	}
 
+	/**
+	 * 
+	 * @param w
+	 * @return
+	 */
 	public boolean containWord(final Integer w) {
-		//		return map.containsKey(w);
 		for (final Integer word : words) {
 			if(word == w) {
 				return true;
@@ -67,65 +58,38 @@ public class Tweet {
 
 	// **** GETTERS ****
 
+	/**
+	 * Return the {@link #polarite} of the tweet (which is the global polarity)
+	 * @return
+	 */
 	public int getPolarite() {
 		return polarite;
 	}
 
-	public void getPolariteDerive(final Classifier c) {
-
-	}
-
-	public void setPolarite(final int polarite) {
-		this.polarite = polarite;
-	}
-
+	/**
+	 * Return the second tag {@link #marque} of the tweet (which is the global polarity)
+	 * @return
+	 */
 	public String getMarque() {
 		return marque;
 	}
 
-	public void setMarque(final String marque) {
-		this.marque = marque;
-	}
-
+	/**
+	 * Return the words' code of the tweet
+	 * @return
+	 */
 	public Integer[] getWords() {
-		//		final Integer[] words = new Integer[map.size()];
-		//		Integer cpt = 0;
-		//		for(final Entry<Integer, Boolean> word : map.entrySet()) {
-		//			words[cpt] = word.getKey();
-		//			cpt++;
-		//		}
 		return words;
 	}
 
-	public void setWords(final Integer[] words) {
-		//		this.words = words;
-		//		map.clear();
-		//		for (final Integer element : words) {
-		//			if(!map.containsKey(element)) {
-		//				map.put(element, true);
-		//			}
-		//		}
-		this.words = words;
-	}
-
+	/**
+	 * Prints the tweet's info for debug
+	 */
 	@Override
 	public String toString() {
 		String s = "p: " + polarite + ", m: " + marque + ", ws: ";
 		final int length = words.length;
-		//		final int length = map.size();
-		//		int i = 0;
-		//		for(final Entry<Integer, Boolean> word : map.entrySet()) {
-		//			s+= word.getKey();
-		//			if (i != length - 1) {
-		//				s += ", ";
-		//			} else {
-		//				s += " || ";
-		//			}
-		//			i++;
-		//		}
-
 		for (int i = 0; i < length; i++) {
-			//			s += words[i];C
 			if (i != length - 1) {
 				s += ", ";
 			} else {

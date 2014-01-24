@@ -9,28 +9,43 @@ import sources2.classifiers.ClassifierAsie;
 import sources2.classifiers.ClassifierEurope;
 import sources2.classifiers.ClassifierSimple;
 
+/**
+ * Use 3 Classifiers to cut corpus into Asian and European part and find final classes.
+ * Managers are responsible for the setting and the concatenation of classifiers. They can be used like classifiers.
+ * @author vincent
+ *
+ */
 public class ManagerAsieEurope extends AbstractManager {
 
-	final ArrayList<ArrayList<Tweet>> datas;
+	// classifiers
 	Classifier region = new ClassifierAsianEurope();
-	//	Classifier simple = new ClassifierSimple();
 	Classifier europe = new ClassifierEurope();
 	Classifier asia = new ClassifierAsie();
 
 	public ManagerAsieEurope() {
-		datas = null;
+		// precise the number of final classes (default = 0)
 		NB_CLASSES = 11;
 	}
 
+	/**
+	 * Learn datas from the file
+	 * @param datas the datas to use, ListOfClasses<ListOfTweetsFor1Class<Tweet>>
+	 * @param k the "k" parameter to use
+	 * @param verbose diplays infos if true
+	 */
 	@Override
 	public void learn(final ArrayList<ArrayList<Tweet>> datas, final double k, final boolean verbose) {
-		// make all the classifiers learn
 		region.learn(this, datas, k, verbose);
 		europe.learn(this, datas, k, verbose);
 		asia.learn(this, datas, k, verbose);
-		//		simple.learn(this, datas, k, verbose);
 	}
 
+	/**
+	 * Calculates the languages of the datasTest
+	 * @param dataTest data to analyse
+	 * @param verbose diplays infos if true
+	 * @return analysed data, ListOfDerivedClasses<ListOfTweetsFor1DerivedClass<Tweet>>
+	 */
 	@Override
 	public ArrayList<ArrayList<Tweet>> work(final ArrayList<Tweet> dataTest, final boolean verbose) {
 		final ArrayList<ArrayList<Tweet>> results = new ArrayList<ArrayList<Tweet>>();
@@ -58,6 +73,12 @@ public class ManagerAsieEurope extends AbstractManager {
 		return results;
 	}
 
+	/**
+	 * Print performance
+	 * @param res the data analysed
+	 * @param verbose displays infos if true
+	 * @return the accuracy in %
+	 */
 	@Override
 	public double check(final ArrayList<ArrayList<Tweet>> res, final boolean verbose) {
 		final Classifier simple = new ClassifierSimple();
@@ -66,19 +87,24 @@ public class ManagerAsieEurope extends AbstractManager {
 			simple.calculateAndDisplayConfusionMatrix(
 					res);
 		}
-		//		final double accuracy = simple.check(results, verbose);
-		//		if(verbose) {
-		//			simple.calculateAndDisplayConfusionMatrix(
-		//					results);
-		//		}
 		return accuracy;
 	}
 
+	/**
+	 * Transform the text before it's translated by any classifier or manager
+	 * @param text Text to transform
+	 * @return transformed text
+	 */
 	@Override
-	public String filter(final String text) {
+	protected String filter(final String text) {
 		return text;//.toLowerCase();
 	}
 
+	/**
+	 * Natural to Integer, gives the code of a final classe
+	 * @param polarite the text of the final classe
+	 * @return the code of the final classe
+	 */
 	@Override
 	public Integer nti(final String polarite) {
 		if(polarite.equals("ARA")) {
@@ -108,6 +134,11 @@ public class ManagerAsieEurope extends AbstractManager {
 		}
 	}
 
+	/**
+	 * Integer to Natural, gives the string representation of a final classe code.
+	 * @param polarite the code of the final classe
+	 * @return the string description of the final classe
+	 */
 	@Override
 	public String itn(final Integer polarite) {
 		switch(polarite) {

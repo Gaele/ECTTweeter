@@ -7,12 +7,16 @@ import sources2.AbstractManager;
 import sources2.Classifier;
 import sources2.Tweet;
 
+/**
+ * Split datas into Asian and European languages
+ * Concrete managers are responsible for the management of the concrete local classes and translation betweet local and global class.
+ * @author vincent
+ *
+ */
 public class ClassifierAsianEurope extends Classifier {
 
 	public ClassifierAsianEurope() {
 		super();
-		// split into Asian / European
-		// 0 => European, 1 => Asian
 		NB_CLASSES_DERIVEES = 2;
 
 		toDerivatedClasses = new Integer[11];
@@ -29,10 +33,9 @@ public class ClassifierAsianEurope extends Classifier {
 		toDerivatedClasses[10] = 1;// TUR
 	}
 
-	/**
-	 * Nationalities to integer
-	 * @param polarite the nationality
-	 * @return the nationality code
+	/*
+	 * (non-Javadoc)
+	 * @see sources2.Classifier#nti(java.lang.String)
 	 */
 	@Override
 	public Integer nti(final String polarite) {
@@ -63,11 +66,9 @@ public class ClassifierAsianEurope extends Classifier {
 		}
 	}
 
-	/**
-	 * integer to nationality
-	 *
-	 * @param polarity the nationality code
-	 * @return the nationality String
+	/*
+	 * (non-Javadoc)
+	 * @see sources2.Classifier#itn(java.lang.Integer)
 	 */
 	@Override
 	public String itn(final Integer polarity) {
@@ -81,11 +82,19 @@ public class ClassifierAsianEurope extends Classifier {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see sources2.Classifier#isUsable(sources2.Tweet)
+	 */
 	@Override
 	public boolean isUsable(final Tweet t) {
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see sources2.Classifier#preTraitement(sources2.AbstractManager, java.util.ArrayList, java.util.HashMap)
+	 */
 	@Override
 	public ArrayList<ArrayList<Tweet>> preTraitement(final AbstractManager man,
 			final ArrayList<ArrayList<Tweet>> datas, final HashMap<Integer, Integer> localDictionary) {

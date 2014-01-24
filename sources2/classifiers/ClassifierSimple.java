@@ -7,6 +7,12 @@ import sources2.AbstractManager;
 import sources2.Classifier;
 import sources2.Tweet;
 
+/**
+ * Split datas directly final classes
+ * Concrete managers are responsible for the management of the concrete local classes and translation betweet local and global class.
+ * @author vincent
+ *
+ */
 public class ClassifierSimple extends Classifier {
 
 	public ClassifierSimple() {
@@ -17,13 +23,11 @@ public class ClassifierSimple extends Classifier {
 		for(int i=0; i<11; i++) {
 			toDerivatedClasses[i] = i;
 		}
-
 	}
 
-	/**
-	 * Nationalities to integer
-	 * @param polarite the nationality
-	 * @return the nationality code
+	/*
+	 * (non-Javadoc)
+	 * @see sources2.Classifier#nti(java.lang.String)
 	 */
 	@Override
 	public Integer nti(final String polarite) {
@@ -54,11 +58,9 @@ public class ClassifierSimple extends Classifier {
 		}
 	}
 
-	/**
-	 * integer to nationality
-	 * 
-	 * @param polarity the nationality code
-	 * @return the nationality String
+	/*
+	 * (non-Javadoc)
+	 * @see sources2.Classifier#itn(java.lang.Integer)
 	 */
 	@Override
 	public String itn(final Integer polarity) {
@@ -90,22 +92,28 @@ public class ClassifierSimple extends Classifier {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see sources2.Classifier#isUsable(sources2.Tweet)
+	 */
 	@Override
 	public boolean isUsable(final Tweet t) {
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see sources2.Classifier#preTraitement(sources2.AbstractManager, java.util.ArrayList, java.util.HashMap)
+	 */
 	@Override
 	public ArrayList<ArrayList<Tweet>> preTraitement(final AbstractManager man,
 			final ArrayList<ArrayList<Tweet>> datas, final HashMap<Integer, Integer> localDictionary) {
-		//		localDictionary.putAll(man.getDictionary());
 		int i=0;
 		for(final ArrayList<Tweet> classe : datas) {
 			if(toDerivatedClasses[i] < 0) {
 				i++;
 				continue;
 			}
-			//			localDatas.get(toDerivatedClasses[i]).addAll(classe);
 			for(final Tweet t : classe) {
 				for(final Integer word : t.getWords()) {
 					final Integer res = localDictionary.get(word);

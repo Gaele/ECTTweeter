@@ -5,14 +5,13 @@ import java.io.IOException;
 import sources2.managers.SimpleManager;
 
 /**
- * from this page : http://perso.limsi.fr/lavergne
+ * This project is a student project. Teacher's page here : http://perso.limsi.fr/lavergne
+ * Main class is responsible for the instanciation of different managers and the management of user's interaction.
  * 
  * @author vvanhec
  * 
  */
 public class Main {
-
-	public final static String TRAIN = "train";
 
 	public static void main(final String[] args) {
 		// wait key pressed to prepare monitoring...
@@ -33,6 +32,7 @@ public class Main {
 		final File test = new File(
 				"src/dataProject/dev.txt");
 
+		// Pipe lined test
 		//		final AbstractManager manager = new ManagerAsieEurope();
 		//		final ArrayList<ArrayList<Tweet>> datas = manager.fileToArrayList(learn);
 		//		manager.learn(datas, 0.1, true);
@@ -60,15 +60,6 @@ public class Main {
 		final double moyenne = simple.crossValidation(learn, bestK, false);
 		System.out.println("precision = "+moyenne);
 
-		// other test
-		//		final Classifier asianEurope = new ClassifierAsie();
-		//		final double accuracy = manager.crossValidation(asianEurope, learn, 0.1, true);
-		//		System.out.println("accuracy: " + accuracy);
-
-		//		final Classifier classifier = new ClassifierProject();
-		//		final double optimum = ClassifierManager.calculateMin(classifier, f, 0.01, 1.0, 0.001);
-		//		System.out.println("best k = "+optimum);
-		//		System.out.println("==> " + classifier.crossValidation(f, 0.46342773437499996));
 		System.out.println("\n\n> TOTAL TIME : " + (System.nanoTime() - start) / 1000000000 + " sec");
 
 	}

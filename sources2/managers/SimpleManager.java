@@ -6,28 +6,49 @@ import sources2.Classifier;
 import sources2.Tweet;
 import sources2.classifiers.ClassifierSimple;
 
+/**
+ * This Manger uses only one Classifier to split datas into classes.
+ * Managers are responsible for the setting and the concatenation of classifiers. They can be used like classifiers.
+ * @author vincent
+ *
+ */
 public class SimpleManager extends AbstractManager {
 
-	final ArrayList<ArrayList<Tweet>> datas;
 	Classifier simple = new ClassifierSimple();
 
 	public SimpleManager() {
-		datas = null;
+		// precise the number of final classes (default = 0)
 		NB_CLASSES = 11;
 	}
 
+	/**
+	 * Learn datas from the file
+	 * @param datas the datas to use, ListOfClasses<ListOfTweetsFor1Class<Tweet>>
+	 * @param k the "k" parameter to use
+	 * @param verbose diplays infos if true
+	 */
 	@Override
 	public void learn(final ArrayList<ArrayList<Tweet>> datas, final double k, final boolean verbose) {
-		// make all the classifiers learn
 		simple.learn(this, datas, k, verbose);
 	}
 
+	/**
+	 * Calculates the languages of the datasTest
+	 * @param dataTest data to analyse
+	 * @param verbose diplays infos if true
+	 * @return analysed data, ListOfDerivedClasses<ListOfTweetsFor1DerivedClass<Tweet>>
+	 */
 	@Override
 	public ArrayList<ArrayList<Tweet>> work(final ArrayList<Tweet> dataTest, final boolean verbose) {
 		return simple.work(dataTest, true);
-
 	}
 
+	/**
+	 * Print performance
+	 * @param res the data analysed
+	 * @param verbose displays infos if true
+	 * @return the accuracy in %
+	 */
 	@Override
 	public double check(final ArrayList<ArrayList<Tweet>> res, final boolean verbose) {
 		final double accuracy = simple.check(res, verbose);
@@ -38,11 +59,21 @@ public class SimpleManager extends AbstractManager {
 		return accuracy;
 	}
 
+	/**
+	 * Transform the text before it's translated by any classifier or manager
+	 * @param text Text to transform
+	 * @return transformed text
+	 */
 	@Override
-	public String filter(final String text) {
+	protected String filter(final String text) {
 		return text;//.toLowerCase();
 	}
 
+	/**
+	 * Natural to Integer, gives the code of a final classe
+	 * @param polarite the text of the final classe
+	 * @return the code of the final classe
+	 */
 	@Override
 	public Integer nti(final String polarite) {
 		if(polarite.equals("ARA")) {
@@ -72,6 +103,11 @@ public class SimpleManager extends AbstractManager {
 		}
 	}
 
+	/**
+	 * Integer to Natural, gives the string representation of a final classe code.
+	 * @param polarite the code of the final classe
+	 * @return the string description of the final classe
+	 */
 	@Override
 	public String itn(final Integer polarite) {
 		switch(polarite) {
