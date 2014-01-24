@@ -35,31 +35,6 @@ public class ClassifierAsie extends Classifier {
 
 	/*
 	 * (non-Javadoc)
-	 * @see sources2.Classifier#nti(java.lang.String)
-	 */
-	@Override
-	public Integer nti(final String polarite) {
-		if(polarite.equals("ARA")) {
-			return 0;
-		} else if(polarite.equals("CHI")) {
-			return 1;
-		} else if(polarite.equals("HIN")) {
-			return 2;
-		} else if(polarite.equals("JPN")) {
-			return 3;
-		} else if(polarite.equals("KOR")) {
-			return 4;
-		} else if(polarite.equals("TEL")) {
-			return 5;
-		} else if(polarite.equals("TUR")) {
-			return 6;
-		} else {
-			return -1;
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
 	 * @see sources2.Classifier#itn(java.lang.Integer)
 	 */
 	@Override
@@ -90,7 +65,7 @@ public class ClassifierAsie extends Classifier {
 	 */
 	@Override
 	public boolean isUsable(final Tweet t) {
-		if(t.getPolarite() == 0 || t.getPolarite() == 1 || t.getPolarite() == 4 || t.getPolarite() == 6 || t.getPolarite() == 7 || t.getPolarite() == 9 || t.getPolarite() == 10) {
+		if(t.getPolarit() == 0 || t.getPolarit() == 1 || t.getPolarit() == 4 || t.getPolarit() == 6 || t.getPolarit() == 7 || t.getPolarit() == 9 || t.getPolarit() == 10) {
 			return true;
 		}
 		return false;
@@ -129,6 +104,15 @@ public class ClassifierAsie extends Classifier {
 			i++;
 		}
 		return localDatas;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see sources2.Classifier#getTag(sources2.Tweet)
+	 */
+	@Override
+	public int getTag(final Tweet t) {
+		return t.getPolarit();
 	}
 
 }

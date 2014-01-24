@@ -35,39 +35,6 @@ public class ClassifierAsianEurope extends Classifier {
 
 	/*
 	 * (non-Javadoc)
-	 * @see sources2.Classifier#nti(java.lang.String)
-	 */
-	@Override
-	public Integer nti(final String polarite) {
-		if(polarite.equals("ARA")) {
-			return 1;
-		} else if(polarite.equals("CHI")) {
-			return 1;
-		} else if(polarite.equals("FRE")) {
-			return 0;
-		} else if(polarite.equals("GER")) {
-			return 0;
-		} else if(polarite.equals("HIN")) {
-			return 1;
-		} else if(polarite.equals("ITA")) {
-			return 0;
-		} else if(polarite.equals("JPN")) {
-			return 1;
-		} else if(polarite.equals("KOR")) {
-			return 1;
-		} else if(polarite.equals("SPA")) {
-			return 0;
-		} else if(polarite.equals("TEL")) {
-			return 1;
-		} else if(polarite.equals("TUR")) {
-			return 1;
-		} else {
-			return -1;
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
 	 * @see sources2.Classifier#itn(java.lang.Integer)
 	 */
 	@Override
@@ -123,6 +90,15 @@ public class ClassifierAsianEurope extends Classifier {
 			i++;
 		}
 		return localDatas;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see sources2.Classifier#getTag(sources2.Tweet)
+	 */
+	@Override
+	public int getTag(final Tweet t) {
+		return 0;
 	}
 
 }

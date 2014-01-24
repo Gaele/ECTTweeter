@@ -13,16 +13,16 @@ import sources2.Tweet;
  * @author vincent
  *
  */
-public class ClassifierSimple extends Classifier {
+public class ClassifierNiveau extends Classifier {
 
-	public ClassifierSimple() {
+	public ClassifierNiveau() {
 		super();
-		NB_CLASSES_DERIVEES = 11;
+		NB_CLASSES_DERIVEES = 3;
 
-		toDerivatedClasses = new Integer[11];
-		for(int i=0; i<11; i++) {
-			toDerivatedClasses[i] = i;
-		}
+		toDerivatedClasses = new Integer[3];
+		toDerivatedClasses[0] = 0;// low
+		toDerivatedClasses[1] = 1;// medium
+		toDerivatedClasses[2] = 2;// high
 	}
 
 	/*
@@ -33,27 +33,11 @@ public class ClassifierSimple extends Classifier {
 	public String itn(final Integer polarity) {
 		switch(polarity) {
 		case 0:
-			return "ARA";
+			return "low";
 		case 1:
-			return "CHI";
+			return "medium";
 		case 2:
-			return "FRE";
-		case 3:
-			return "GER";
-		case 4:
-			return "HIN";
-		case 5:
-			return "ITA";
-		case 6:
-			return "JPN";
-		case 7:
-			return "KOR";
-		case 8:
-			return "SPA";
-		case 9:
-			return "TEL";
-		case 10:
-			return "TUR";
+			return "high";
 		default:
 			return "???";
 		}
@@ -76,12 +60,14 @@ public class ClassifierSimple extends Classifier {
 	public ArrayList<ArrayList<Tweet>> preTraitement(final AbstractManager man,
 			final ArrayList<ArrayList<Tweet>> datas, final HashMap<Integer, Integer> localDictionary) {
 		int i=0;
+		// initialise new local data structure
+		final ArrayList<ArrayList<Tweet>> localDatas = new ArrayList<ArrayList<Tweet>>();
+		for(int j=0; j<NB_CLASSES_DERIVEES; j++) {
+			localDatas.add(new ArrayList<Tweet>());
+		}
 		for(final ArrayList<Tweet> classe : datas) {
-			if(toDerivatedClasses[i] < 0) {
-				i++;
-				continue;
-			}
 			for(final Tweet t : classe) {
+				localDatas.get(toDerivatedClasses[t.getMarque()]).add(t);
 				for(final Integer word : t.getWords()) {
 					final Integer res = localDictionary.get(word);
 					if(res == null) {
@@ -92,7 +78,8 @@ public class ClassifierSimple extends Classifier {
 			}
 			i++;
 		}
-		return datas;
+		//		System.out.println(datas.size());
+		return localDatas;
 	}
 
 	/*
@@ -101,7 +88,7 @@ public class ClassifierSimple extends Classifier {
 	 */
 	@Override
 	public int getTag(final Tweet t) {
-		return t.getPolarit();
+		return t.getMarque();
 	}
 
 }

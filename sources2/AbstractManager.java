@@ -62,6 +62,13 @@ public abstract class AbstractManager {
 	protected abstract String filter(String text);
 
 	/**
+	 * Natural to Integer for the second data of the tweets, gives the code of the second data
+	 * @param marque the text of the second data
+	 * @return the code of the second data
+	 */
+	protected abstract int nti2(String marque);
+
+	/**
 	 * Natural to Integer, gives the code of a final classe
 	 * @param polarite the text of the final classe
 	 * @return the code of the final classe
@@ -135,7 +142,7 @@ public abstract class AbstractManager {
 			br = new BufferedReader(new FileReader(f));
 			while ((line = br.readLine()) != null) {
 				final Tweet tweet = getTweet(line);
-				datas.get(tweet.getPolarite()).add(tweet);
+				datas.get(tweet.getPolarit()).add(tweet);
 			}
 		} catch (final FileNotFoundException e) {
 			e.printStackTrace();
@@ -214,7 +221,7 @@ public abstract class AbstractManager {
 					}
 				}
 				final Tweet tweet = getTweet(line);
-				datas.get(tweet.getPolarite()).add(tweet);
+				datas.get(tweet.getPolarit()).add(tweet);
 				cpt++;
 			}
 		} catch (final FileNotFoundException e) {
@@ -243,10 +250,6 @@ public abstract class AbstractManager {
 		String texte = line.substring(middle + 2, line.length());
 		texte = filter(texte);
 		final String polarite = line.substring(1, line.indexOf(','));
-		int polariteCode;
-
-		polariteCode = nti(polarite);
-
 		final String marque = line.substring(line.indexOf(',') + 1, middle);
 
 		// treat tokens
@@ -254,7 +257,7 @@ public abstract class AbstractManager {
 		final Integer[] words = getNumbersFromWords(tokens);
 
 		// create tweet
-		return new Tweet(polariteCode, marque, words);
+		return new Tweet(nti(polarite), nti2(marque), words);
 	}
 
 

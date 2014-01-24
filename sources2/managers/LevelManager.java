@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import sources2.AbstractManager;
 import sources2.Classifier;
 import sources2.Tweet;
-import sources2.classifiers.ClassifierSimple;
+import sources2.classifiers.ClassifierNiveau;
 
 /**
  * This Manger uses only one Classifier to split datas into classes.
@@ -12,11 +12,11 @@ import sources2.classifiers.ClassifierSimple;
  * @author vincent
  *
  */
-public class SimpleManager extends AbstractManager {
+public class LevelManager extends AbstractManager {
 
-	Classifier simple = new ClassifierSimple();
+	Classifier classifieur = new ClassifierNiveau();
 
-	public SimpleManager() {
+	public LevelManager() {
 		// precise the number of final classes (default = 0)
 		NB_CLASSES = 11;
 	}
@@ -29,7 +29,7 @@ public class SimpleManager extends AbstractManager {
 	 */
 	@Override
 	public void learn(final ArrayList<ArrayList<Tweet>> datas, final double k, final boolean verbose) {
-		simple.learn(this, datas, k, verbose);
+		classifieur.learn(this, datas, k, verbose);
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class SimpleManager extends AbstractManager {
 	 */
 	@Override
 	public ArrayList<ArrayList<Tweet>> work(final ArrayList<Tweet> dataTest, final boolean verbose) {
-		return simple.work(dataTest, true);
+		return classifieur.work(dataTest, true);
 	}
 
 	/**
@@ -51,9 +51,9 @@ public class SimpleManager extends AbstractManager {
 	 */
 	@Override
 	public double check(final ArrayList<ArrayList<Tweet>> res, final boolean verbose) {
-		final double accuracy = simple.check(res, verbose);
+		final double accuracy = classifieur.check(res, verbose);
 		if(verbose) {
-			simple.calculateAndDisplayConfusionMatrix(
+			classifieur.calculateAndDisplayConfusionMatrix(
 					res);
 		}
 		return accuracy;

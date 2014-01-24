@@ -18,14 +18,14 @@ public class Tweet {
 	/**
 	 * The second information to analyse which can help us to forecast {@link #polarite}
 	 */
-	private final String marque;
+	private final int marque;
 
 	/**
 	 * The datas used to forecast the {@link #polarite}
 	 */
 	private final Integer[] words;
 
-	public Tweet(final int polarite, final String marque, final Integer[] w) {
+	public Tweet(final int polarite, final int marque, final Integer[] w) {
 		this.polarite = polarite;
 		this.marque = marque;
 		// get unique words
@@ -62,15 +62,19 @@ public class Tweet {
 	 * Return the {@link #polarite} of the tweet (which is the global polarity)
 	 * @return
 	 */
-	public int getPolarite() {
+	public int getPolarit() {
 		return polarite;
+	}
+
+	public int getTag(final Classifier c) {
+		return c.getTag(this);
 	}
 
 	/**
 	 * Return the second tag {@link #marque} of the tweet (which is the global polarity)
 	 * @return
 	 */
-	public String getMarque() {
+	public int getMarque() {
 		return marque;
 	}
 

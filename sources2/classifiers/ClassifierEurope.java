@@ -35,25 +35,6 @@ public class ClassifierEurope extends Classifier {
 
 	/*
 	 * (non-Javadoc)
-	 * @see sources2.Classifier#nti(java.lang.String)
-	 */
-	@Override
-	public Integer nti(final String polarite) {
-		if(polarite.equals("FRE")) {
-			return 0;
-		} else if(polarite.equals("GER")) {
-			return 1;
-		} else if(polarite.equals("ITA")) {
-			return 2;
-		} else if(polarite.equals("SPA")) {
-			return 3;
-		} else {
-			return -1;
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
 	 * @see sources2.Classifier#itn(java.lang.Integer)
 	 */
 	@Override
@@ -78,7 +59,7 @@ public class ClassifierEurope extends Classifier {
 	 */
 	@Override
 	public boolean isUsable(final Tweet t) {
-		if(t.getPolarite() == 2 || t.getPolarite() == 3 || t.getPolarite() == 5 || t.getPolarite() == 8) {
+		if(t.getPolarit() == 2 || t.getPolarit() == 3 || t.getPolarit() == 5 || t.getPolarit() == 8) {
 			return true;
 		}
 		return false;
@@ -117,6 +98,15 @@ public class ClassifierEurope extends Classifier {
 			i++;
 		}
 		return localDatas;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see sources2.Classifier#getTag(sources2.Tweet)
+	 */
+	@Override
+	public int getTag(final Tweet t) {
+		return t.getPolarit();
 	}
 
 }

@@ -169,4 +169,21 @@ public class ManagerAsieEurope extends AbstractManager {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see sources2.AbstractManager#nti2(java.lang.String)
+	 */
+	@Override
+	protected int nti2(final String marque) {
+		if(marque.equals("low")) {
+			return 0;
+		} else if(marque.equals("medium")) {
+			return 1;
+		} else if(marque.equals("high")) {
+			return 1;
+		} else {
+			return -1;
+		}
+	}
+
 }

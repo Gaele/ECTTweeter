@@ -2,7 +2,7 @@ package sources2;
 import java.io.File;
 import java.io.IOException;
 
-import sources2.managers.SimpleManager;
+import sources2.managers.LevelManager;
 
 /**
  * This project is a student project. Teacher's page here : http://perso.limsi.fr/lavergne
@@ -54,10 +54,14 @@ public class Main {
 		//		System.out.println("precision = "+moyenne);
 
 		// Cherche la meilleur cross validation !
-		final AbstractManager simple = new SimpleManager();
-		final double bestK = simple.calculateMin(learn, 0.01, 1, 0.01);
-		System.out.println("bestK = "+bestK);
-		final double moyenne = simple.crossValidation(learn, bestK, false);
+		//		final AbstractManager simple = new SimpleManager();
+		//		final double bestK = simple.calculateMin(learn, 0.01, 1, 0.01);
+		//		System.out.println("bestK = "+bestK);
+		//		final double moyenne = simple.crossValidation(learn, bestK, false);
+		//		System.out.println("precision = "+moyenne);
+
+		final AbstractManager level = new LevelManager();
+		final double moyenne = level.crossValidation(learn, 0.1, true);
 		System.out.println("precision = "+moyenne);
 
 		System.out.println("\n\n> TOTAL TIME : " + (System.nanoTime() - start) / 1000000000 + " sec");

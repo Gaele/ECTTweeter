@@ -57,6 +57,13 @@ public abstract class Classifier {
 	public abstract ArrayList<ArrayList<Tweet>> preTraitement(final AbstractManager man, final ArrayList<ArrayList<Tweet>> datas, HashMap<Integer, Integer> localDictionary);
 
 	/**
+	 * Get the used data (classe of marqueur) we analyse on tweets with this classifier.
+	 * @param t The tweet
+	 * @return the code of the "tag" of this tweet
+	 */
+	public abstract int getTag(Tweet t);
+
+	/**
 	 * Learn form the global datas
 	 * @param man the manager using this classifier
 	 * @param globalDatas the global datas (ordered by final classes)
@@ -95,13 +102,6 @@ public abstract class Classifier {
 			System.out.println(">>> Time for A: " + (System.nanoTime() - endByw) / 1000000000 + " sec");
 		}
 	}
-
-	/**
-	 * Natural to Integer, gives the code of a derived/local classe
-	 * @param polarite the text of the derived/local classe
-	 * @return the code of the derived/local classe
-	 */
-	public abstract Integer nti(final String polarite);
 
 	/**
 	 * Integer to Natural, gives the string representation of a derived/local classe code.
@@ -266,12 +266,12 @@ public abstract class Classifier {
 		// calculates
 		for(final ArrayList<Tweet> classe : res) {
 			for(final Tweet t : classe) {
-				if (nbClasse == toDerivatedClasses[t.getPolarite()]) {
+				if (nbClasse == toDerivatedClasses[t.getTag(this)]) {
 					okStats[nbClasse]++;
 					ok++;
 				}
 				total++;
-				totStats[toDerivatedClasses[t.getPolarite()]]++;
+				totStats[toDerivatedClasses[t.getTag(this)]]++;
 				nbInClasse[nbClasse]++;
 			}
 			nbClasse++;
@@ -342,7 +342,7 @@ public abstract class Classifier {
 		int nbClasse=0;
 		for (final ArrayList<Tweet> classe : evaluationTweets) {
 			for (final Tweet tweet : classe) {
-				final int real = toDerivatedClasses[tweet.getPolarite()];
+				final int real = toDerivatedClasses[tweet.getTag(this)];
 				final int calculated = nbClasse;
 				confusionMatrix[calculated][real] += 1;
 			}
