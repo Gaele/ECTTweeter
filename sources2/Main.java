@@ -2,7 +2,7 @@ package sources2;
 import java.io.File;
 import java.io.IOException;
 
-import sources2.classifiers.ClassifierSimple;
+import sources2.classifiers.ClassifierAsie;
 
 /**
  * from this page : http://perso.limsi.fr/lavergne
@@ -40,7 +40,7 @@ public class Main {
 		//		manager.check(true);
 
 		// other test
-		final Classifier asianEurope = new ClassifierSimple();
+		final Classifier asianEurope = new ClassifierAsie();
 		final double accuracy = manager.crossValidation(asianEurope, learn, 0.1, true);
 		System.out.println("accuracy: " + accuracy);
 

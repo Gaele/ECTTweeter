@@ -64,7 +64,10 @@ public abstract class AbstractManager {
 			if(verbose) {
 				c.calculateAndDisplayConfusionMatrix(res);
 			}
+			System.out.print("-");
+			System.out.flush();
 		}
+		System.out.println();
 		// print results
 		int sum = 0;
 		for(int i=0; i<size; i++) {

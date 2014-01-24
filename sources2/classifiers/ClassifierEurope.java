@@ -7,17 +7,24 @@ import sources2.AbstractManager;
 import sources2.Classifier;
 import sources2.Tweet;
 
-public class ClassifierSimple extends Classifier {
+public class ClassifierEurope extends Classifier {
 
-	public ClassifierSimple() {
+	public ClassifierEurope() {
 		super();
-		NB_CLASSES_DERIVEES = 11;
+		NB_CLASSES_DERIVEES = 4;
 
 		toDerivatedClasses = new Integer[11];
-		for(int i=0; i<11; i++) {
-			toDerivatedClasses[i] = i;
-		}
-
+		toDerivatedClasses[0] = -1;// ARA
+		toDerivatedClasses[1] = -1;// CHI
+		toDerivatedClasses[2] = 0;// FRE
+		toDerivatedClasses[3] = 1;// GER
+		toDerivatedClasses[4] = -1;// HIN
+		toDerivatedClasses[5] = 2;// ITA
+		toDerivatedClasses[6] = -1;// JPN
+		toDerivatedClasses[7] = -1;// KOR
+		toDerivatedClasses[8] = 3;// SPA
+		toDerivatedClasses[9] = -1;// TEL
+		toDerivatedClasses[10] = -1;// TUR
 	}
 
 	/**
@@ -27,28 +34,14 @@ public class ClassifierSimple extends Classifier {
 	 */
 	@Override
 	public Integer nti(final String polarite) {
-		if(polarite.equals("ARA")) {
+		if(polarite.equals("FRE")) {
 			return 0;
-		} else if(polarite.equals("CHI")) {
-			return 1;
-		} else if(polarite.equals("FRE")) {
-			return 2;
 		} else if(polarite.equals("GER")) {
-			return 3;
-		} else if(polarite.equals("HIN")) {
-			return 4;
+			return 1;
 		} else if(polarite.equals("ITA")) {
-			return 5;
-		} else if(polarite.equals("JPN")) {
-			return 6;
-		} else if(polarite.equals("KOR")) {
-			return 7;
+			return 2;
 		} else if(polarite.equals("SPA")) {
-			return 8;
-		} else if(polarite.equals("TEL")) {
-			return 9;
-		} else if(polarite.equals("TUR")) {
-			return 10;
+			return 3;
 		} else {
 			return -1;
 		}
@@ -56,7 +49,7 @@ public class ClassifierSimple extends Classifier {
 
 	/**
 	 * integer to nationality
-	 * 
+	 *
 	 * @param polarity the nationality code
 	 * @return the nationality String
 	 */
@@ -64,27 +57,13 @@ public class ClassifierSimple extends Classifier {
 	public String itn(final Integer polarity) {
 		switch(polarity) {
 		case 0:
-			return "ARA";
-		case 1:
-			return "CHI";
-		case 2:
 			return "FRE";
-		case 3:
+		case 1:
 			return "GER";
-		case 4:
-			return "HIN";
-		case 5:
+		case 2:
 			return "ITA";
-		case 6:
-			return "JPN";
-		case 7:
-			return "KOR";
-		case 8:
+		case 3:
 			return "SPA";
-		case 9:
-			return "TEL";
-		case 10:
-			return "TUR";
 		default:
 			return "???";
 		}
@@ -92,20 +71,29 @@ public class ClassifierSimple extends Classifier {
 
 	@Override
 	public boolean isUsable(final Tweet t) {
-		return true;
+		if(t.getPolarite() == 2 || t.getPolarite() == 3 || t.getPolarite() == 5 || t.getPolarite() == 8) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
 	public ArrayList<ArrayList<Tweet>> preTraitement(final AbstractManager man,
 			final ArrayList<ArrayList<Tweet>> datas, final HashMap<Integer, Integer> localDictionary) {
-		//		localDictionary.putAll(man.getDictionary());
 		int i=0;
+		// initialise new local data structure
+		final ArrayList<ArrayList<Tweet>> localDatas = new ArrayList<ArrayList<Tweet>>();
+		for(int j=0; j<NB_CLASSES_DERIVEES; j++) {
+			localDatas.add(new ArrayList<Tweet>());
+		}
+		// copy interesting parts of global datas
 		for(final ArrayList<Tweet> classe : datas) {
 			if(toDerivatedClasses[i] < 0) {
 				i++;
 				continue;
 			}
-			//			localDatas.get(toDerivatedClasses[i]).addAll(classe);
+			localDatas.get(toDerivatedClasses[i]).addAll(classe);
+			// dictionnary management
 			for(final Tweet t : classe) {
 				for(final Integer word : t.getWords()) {
 					final Integer res = localDictionary.get(word);
@@ -117,7 +105,7 @@ public class ClassifierSimple extends Classifier {
 			}
 			i++;
 		}
-		return datas;
+		return localDatas;
 	}
 
 }

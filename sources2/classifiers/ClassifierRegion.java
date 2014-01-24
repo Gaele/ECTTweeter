@@ -100,6 +100,7 @@ public class ClassifierRegion extends Classifier {
 		// copy interesting parts of global datas
 		for(final ArrayList<Tweet> classe : datas) {
 			if(toDerivatedClasses[i] < 0) {
+				i++;
 				continue;
 			}
 			localDatas.get(toDerivatedClasses[i]).addAll(classe);

@@ -47,7 +47,7 @@ public class ClassifierManager extends AbstractManager {
 
 	@Override
 	public String filter(final String text) {
-		return text;
+		return text;//.toLowerCase();
 	}
 
 	@Override

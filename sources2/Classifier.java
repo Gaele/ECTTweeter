@@ -48,8 +48,6 @@ public abstract class Classifier {
 		localDictionary.clear();
 		nextLocalId = 0;
 		final ArrayList<ArrayList<Tweet>> datas = preTraitement(man, globalDatas, localDictionary);
-		System.out.println("lastInsertId: "+nextLocalId);
-		System.out.println("dico.size: "+localDictionary.size());
 		final Long endLocalDico = System.nanoTime();
 		if(verbose) {
 			System.out.println(">>> Time for localDico: " + (endLocalDico - startCalculus) / 1000000000 + " sec");
@@ -220,6 +218,9 @@ public abstract class Classifier {
 			result.add(new ArrayList<Tweet>());
 		}
 		for (final Tweet t : tweets) {
+			if(!isUsable(t)) {
+				continue;
+			}
 			final int classe = calculatePxy2(t);
 			result.get(classe).add(t);
 		}
