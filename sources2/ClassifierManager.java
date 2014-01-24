@@ -1,85 +1,106 @@
 package sources2;
-import java.io.File;
 import java.util.ArrayList;
 
 import sources2.classifiers.ClassifierRegion;
 import sources2.classifiers.ClassifierSimple;
 
-public class ClassifierManager {
+public class ClassifierManager extends AbstractManager {
 
-	/**
-	 * Train on trainFile and test on testFile
-	 */
-	private static void  trainDevTest(final Classifier classifier, final double k, final File trainFile, final File testFile, final boolean verbose) {
-		final Long start = System.nanoTime();
-		final ArrayList<ArrayList<Tweet>> datas = classifier.fileToArrayList(trainFile);
-		final Long endLoad = System.nanoTime();
-		if(verbose) {
-			System.out.println("> Load done in : " + (endLoad - start) / 1000000 + " ms");
-		}
-		// calculus
-		classifier.calculate(datas, k, false);
-		final Long endCalculus = System.nanoTime();
-		if(verbose) {
-			System.out.println("> Calculus done in : " + (endCalculus - endLoad) / 1000000000 + " sec");
-		}
-		// printing results
-		classifier.printResults(classifier.fileToArrayList(testFile));
-		if(verbose) {
-			System.out.println("> Stats done in : " + (System.nanoTime() - endCalculus) / 1000000000 + " sec");
-		}
-		System.out.println("\n\n> TOTAL TIME CLASSIFIER : " + (System.nanoTime() - start) / 1000000000 + " sec");
+	final ArrayList<ArrayList<Tweet>> datas;
+	Classifier region = new ClassifierRegion();
+	Classifier simple = new ClassifierSimple();
+	ArrayList<ArrayList<Tweet>> results = new ArrayList<ArrayList<Tweet>>();
+
+	public ClassifierManager() {
+		datas = null;
+		NB_CLASSES = 11;
 	}
 
-	private static void  crossValidation(final Classifier classifier, final File f, final double k, final boolean verbose) {
-		final Long start = System.nanoTime();
-		final double errors = classifier.crossValidation(f, k, verbose);
-		System.out.println("Average errors %: "+errors);
-		System.out.println("\n\n> TOTAL TIME CLASSIFIER : " + (System.nanoTime() - start) / 1000000000 + " sec");
+	@Override
+	public void learn(final ArrayList<ArrayList<Tweet>> datas, final double k, final boolean verbose) {
+		// make all the classifiers learn
+		region.learn(this, datas, k, verbose);
+		//		simple.learn(this, datas, k, verbose);
 	}
 
-	public static void simpleClassifier() {
-		//		best k = 0.46342773437499996
-		//		==> 30.77777777777778
-		final Classifier classifier = new ClassifierSimple();
-		final File trainFile = new File(
-				"src/dataProject/smallTrain.txt");
-		final File testFile = new File("src/dataProject/dev.txt");
-		trainDevTest(classifier, 0.1, trainFile, testFile, false);
+	@Override
+	public void work(final ArrayList<Tweet> dataTest, final boolean verbose) {
+		results = region.work(dataTest);
+		//		results = simple.work(dataTest);
 	}
 
-	public static void regionClassifier() {
-		// Will contain classifier for region of language
-		final Classifier classifier = new ClassifierRegion();
-		final File trainFile = new File(
-				"src/dataProject/smallTrain.txt");
-		final File testFile = new File("src/dataProject/dev.txt");
-		//		trainDevTest(classifier, 0.1, trainFile, testFile, false);
-		crossValidation(classifier, trainFile, 0.1, false);
+	@Override
+	public void check() {
+		region.check(results, true);
+		region.calculateAndDisplayConfusionMatrix(
+				results);
+		//		simple.check(results, true);
+		//		simple.calculateAndDisplayConfusionMatrix(
+		//				results);
 	}
 
-	public static double calculateMin(final Classifier classifier, final File trainFile, final double min, final double max, final double limit) {
-		final double middle = (max + min) / 2;
-		if(middle - min < limit) {
-			return middle;
-		}
-		final double littleMiddle = (middle + min) / 2;
-		final double bigMiddle = (max + middle) / 2;
-		final double littleMiddleValue = classifier.crossValidation(trainFile, littleMiddle, false);
-		final double bigMiddleValue = classifier.crossValidation(trainFile, bigMiddle, false);
+	@Override
+	public String filter(final String text) {
+		return text;
+	}
 
-		if(littleMiddleValue < bigMiddleValue) {
-			System.out.println("k="+littleMiddle+" => "+littleMiddleValue+" *");
-			System.out.println("k="+bigMiddle+" => "+bigMiddleValue);
-			System.out.println("-----");
-			return calculateMin(classifier, trainFile, min, middle, limit);
+	@Override
+	public Integer nti(final String polarite) {
+		if(polarite.equals("ARA")) {
+			return 0;
+		} else if(polarite.equals("CHI")) {
+			return 1;
+		} else if(polarite.equals("FRE")) {
+			return 2;
+		} else if(polarite.equals("GER")) {
+			return 3;
+		} else if(polarite.equals("HIN")) {
+			return 4;
+		} else if(polarite.equals("ITA")) {
+			return 5;
+		} else if(polarite.equals("JPN")) {
+			return 6;
+		} else if(polarite.equals("KOR")) {
+			return 7;
+		} else if(polarite.equals("SPA")) {
+			return 8;
+		} else if(polarite.equals("TEL")) {
+			return 9;
+		} else if(polarite.equals("TUR")) {
+			return 10;
 		} else {
-			System.out.println("k="+littleMiddle+" => "+littleMiddleValue);
-			System.out.println("k="+bigMiddle+" => "+bigMiddleValue+" *");
-			System.out.println("-----");
-			return calculateMin(classifier, trainFile, middle, max, limit);
+			return -1;
 		}
+	}
 
+	@Override
+	public String itn(final Integer polarite) {
+		switch(polarite) {
+		case 0:
+			return "ARA";
+		case 1:
+			return "CHI";
+		case 2:
+			return "FRE";
+		case 3:
+			return "GER";
+		case 4:
+			return "HIN";
+		case 5:
+			return "ITA";
+		case 6:
+			return "JPN";
+		case 7:
+			return "KOR";
+		case 8:
+			return "SPA";
+		case 9:
+			return "TEL";
+		case 10:
+			return "TUR";
+		default:
+			return "???";
+		}
 	}
 
 }
