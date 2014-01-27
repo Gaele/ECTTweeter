@@ -103,10 +103,6 @@ public abstract class Classifier {
 		final ArrayList<ArrayList<Tweet>> datas = this.preTraitement(man,
 				globalDatas, this.localDictionary);
 		final Long endLocalDico = System.nanoTime();
-		System.out.println("Length : ");
-		for (final ArrayList<Tweet> classe : datas) {
-			System.out.println(classe.size());
-		}
 		if (verbose) {
 			System.out.println(">>> Time for localDico: "
 					+ (endLocalDico - startCalculus) / 1000000000 + " sec");

@@ -64,9 +64,9 @@ public class Main {
 		// System.out.println("precision = "+moyenne);
 
 		final AbstractManager level = new LevelManager();
-		// final double bestK = level.calculateMin(learn, 0.01, 1, 0.01);
-		// System.out.println("bestK = " + bestK);
-		final double moyenne = level.crossValidation(learn, 0.729296875, true);
+		final double bestK = level.calculateMin(learn, 0.01, 1, 0.01);
+		System.out.println("bestK = " + bestK);
+		final double moyenne = level.crossValidation(learn, bestK, true);
 		System.out.println("precision = " + moyenne);
 
 		System.out.println("\n\n> TOTAL TIME : " + (System.nanoTime() - start)
