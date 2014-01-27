@@ -3,7 +3,7 @@ package sources2;
 import java.io.File;
 import java.io.IOException;
 
-import sources2.managers.LevelManager;
+import sources2.managers.SimpleManager;
 
 /**
  * This project is a student project. Teacher's page here :
@@ -57,16 +57,10 @@ public class Main {
 		// System.out.println("precision = "+moyenne);
 
 		// Cherche la meilleur cross validation !
-		// final AbstractManager simple = new SimpleManager();
-		// final double bestK = simple.calculateMin(learn, 0.01, 1, 0.01);
-		// System.out.println("bestK = "+bestK);
-		// final double moyenne = simple.crossValidation(learn, bestK, false);
-		// System.out.println("precision = "+moyenne);
-
-		final AbstractManager level = new LevelManager();
-		final double bestK = level.calculateMin(learn, 0.01, 1, 0.01);
+		final AbstractManager simple = new SimpleManager();
+		final double bestK = simple.calculateMin(learn, 0.01, 1, 0.01);
 		System.out.println("bestK = " + bestK);
-		final double moyenne = level.crossValidation(learn, bestK, true);
+		final double moyenne = simple.crossValidation(learn, bestK, false);
 		System.out.println("precision = " + moyenne);
 
 		System.out.println("\n\n> TOTAL TIME : " + (System.nanoTime() - start)

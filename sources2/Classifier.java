@@ -72,16 +72,6 @@ public abstract class Classifier {
 			HashMap<Integer, Integer> localDictionary);
 
 	/**
-	 * Get the used data (classe of marqueur) we analyse on tweets with this
-	 * classifier.
-	 * 
-	 * @param t
-	 *            The tweet
-	 * @return the code of the "tag" of this tweet
-	 */
-	public abstract int getTag(Tweet t);
-
-	/**
 	 * Learn form the global datas
 	 * 
 	 * @param man
@@ -328,12 +318,12 @@ public abstract class Classifier {
 		// calculates
 		for (final ArrayList<Tweet> classe : res) {
 			for (final Tweet t : classe) {
-				if (nbClasse == this.toDerivatedClasses[t.getTag(this)]) {
+				if (nbClasse == this.toDerivatedClasses[t.getPolarit()]) {
 					okStats[nbClasse]++;
 					ok++;
 				}
 				total++;
-				totStats[this.toDerivatedClasses[t.getTag(this)]]++;
+				totStats[this.toDerivatedClasses[t.getPolarit()]]++;
 				nbInClasse[nbClasse]++;
 			}
 			nbClasse++;
@@ -410,7 +400,7 @@ public abstract class Classifier {
 		int nbClasse = 0;
 		for (final ArrayList<Tweet> classe : evaluationTweets) {
 			for (final Tweet tweet : classe) {
-				final int real = this.toDerivatedClasses[tweet.getTag(this)];
+				final int real = this.toDerivatedClasses[tweet.getPolarit()];
 				final int calculated = nbClasse;
 				confusionMatrix[calculated][real] += 1;
 			}

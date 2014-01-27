@@ -16,7 +16,8 @@ public class Tweet {
 	private final int polarite;
 
 	/**
-	 * The second information to analyse which can help us to forecast {@link #polarite}
+	 * The second information to analyse which can help us to forecast
+	 * {@link #polarite}
 	 */
 	private final int marque;
 
@@ -33,10 +34,10 @@ public class Tweet {
 		for (final Integer element : w) {
 			hs.add(element);
 		}
-		words = new Integer[hs.size()];
+		this.words = new Integer[hs.size()];
 		int cpt = 0;
 		for (final Integer i : hs) {
-			words[cpt] = i;
+			this.words[cpt] = i;
 			cpt++;
 		}
 
@@ -48,8 +49,8 @@ public class Tweet {
 	 * @return
 	 */
 	public boolean containWord(final Integer w) {
-		for (final Integer word : words) {
-			if(word == w) {
+		for (final Integer word : this.words) {
+			if (word == w) {
 				return true;
 			}
 		}
@@ -60,30 +61,30 @@ public class Tweet {
 
 	/**
 	 * Return the {@link #polarite} of the tweet (which is the global polarity)
+	 * 
 	 * @return
 	 */
 	public int getPolarit() {
-		return polarite;
-	}
-
-	public int getTag(final Classifier c) {
-		return c.getTag(this);
+		return this.polarite;
 	}
 
 	/**
-	 * Return the second tag {@link #marque} of the tweet (which is the global polarity)
+	 * Return the second tag {@link #marque} of the tweet (which is the global
+	 * polarity)
+	 * 
 	 * @return
 	 */
 	public int getMarque() {
-		return marque;
+		return this.marque;
 	}
 
 	/**
 	 * Return the words' code of the tweet
+	 * 
 	 * @return
 	 */
 	public Integer[] getWords() {
-		return words;
+		return this.words;
 	}
 
 	/**
@@ -91,8 +92,8 @@ public class Tweet {
 	 */
 	@Override
 	public String toString() {
-		String s = "p: " + polarite + ", m: " + marque + ", ws: ";
-		final int length = words.length;
+		String s = "p: " + this.polarite + ", m: " + this.marque + ", ws: ";
+		final int length = this.words.length;
 		for (int i = 0; i < length; i++) {
 			if (i != length - 1) {
 				s += ", ";
