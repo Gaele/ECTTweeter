@@ -67,9 +67,38 @@ public abstract class Classifier {
 	 *            to load
 	 * @return
 	 */
-	public abstract ArrayList<ArrayList<Tweet>> preTraitement(
-			final AbstractManager man, final ArrayList<ArrayList<Tweet>> datas,
-			HashMap<Integer, Integer> localDictionary);
+	public ArrayList<ArrayList<Tweet>> preTraitement(final AbstractManager man,
+			final ArrayList<ArrayList<Tweet>> datas,
+			final HashMap<Integer, Integer> localDictionary) {
+		int i = 0;
+		// initialise new local data structure
+		final ArrayList<ArrayList<Tweet>> localDatas = new ArrayList<ArrayList<Tweet>>();
+		for (int j = 0; j < this.NB_CLASSES_DERIVEES; j++) {
+			localDatas.add(new ArrayList<Tweet>());
+		}
+		// copy interesting parts of global datas
+		for (final ArrayList<Tweet> classe : datas) {
+			if (this.toDerivatedClasses[i] < 0) {
+				i++;
+				continue;
+			}
+			// dictionary management
+			for (final Tweet t : classe) {
+				if (this.isUsable(t)) {
+					localDatas.get(this.toDerivatedClasses[i]).add(t);
+				}
+				for (final Integer word : t.getWords()) {
+					final Integer res = localDictionary.get(word);
+					if (res == null) {
+						localDictionary.put(word, this.nextLocalId);
+						this.nextLocalId++;
+					}
+				}
+			}
+			i++;
+		}
+		return localDatas;
+	}
 
 	/**
 	 * Learn form the global datas

@@ -11,9 +11,9 @@ import sources2.Tweet;
  * @author vincent
  * 
  */
-public class ClassifierSimple extends Classifier {
+public class ClassifierHigh extends Classifier {
 
-	public ClassifierSimple() {
+	public ClassifierHigh() {
 		super();
 		this.NB_CLASSES_DERIVEES = 11;
 
@@ -65,7 +65,7 @@ public class ClassifierSimple extends Classifier {
 	 */
 	@Override
 	public boolean isUsable(final Tweet t) {
-		return true;
+		return t.getMarque() == 2;
 	}
 
 }
