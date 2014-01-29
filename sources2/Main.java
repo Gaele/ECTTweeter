@@ -9,7 +9,7 @@ import sources2.managers.SimpleManager;
  * This project is a student project. Teacher's page here :
  * http://perso.limsi.fr/lavergne Main class is responsible for the
  * instanciation of different managers and the management of user's interaction.
- * 
+ *  
  * @author vvanhec
  * 
  */
