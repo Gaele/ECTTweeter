@@ -9,7 +9,7 @@ import sources2.managers.SimpleManager;
  * This project is a student project. Teacher's page here :
  * http://perso.limsi.fr/lavergne Main class is responsible for the
  * instanciation of different managers and the management of user's interaction.
- *  
+ * 
  * @author vvanhec
  * 
  */
@@ -63,8 +63,7 @@ public class Main {
 		final double moyenne = simple.crossValidation(learn, bestK, false);
 		System.out.println("precision = " + moyenne);
 
-		System.out.println("\n\n> TOTAL TIME : " + (System.nanoTime() - start)
-				/ 1000000000 + " sec");
+		System.out.println("\n\n> TOTAL TIME : " + (System.nanoTime() - start) / 1000000000 + " sec");
 
 	}
 

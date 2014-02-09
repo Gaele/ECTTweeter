@@ -1,8 +1,0 @@
-initialRandomData.txt : all the tagged tweets for the teacher sorted randomly. 4654 lines.
-train.txt : the training data. 3772 lines.
-dev.txt : the development datas we use to test. 282 lines.
-internTest.txt : an other test when we think our work is done. 300 lines.
-finalTest.txt : the final test we will use to get the efficiency of our program.
-
-test.txt : the untagged tweets given by the teacher.
-
