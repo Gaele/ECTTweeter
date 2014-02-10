@@ -15,20 +15,20 @@ public class ClassifierAsie extends Classifier {
 
 	public ClassifierAsie() {
 		super();
-		this.NB_CLASSES_DERIVEES = 7;
+		this.NB_CLASSES_DERIVEES = 8;
 
 		this.toDerivatedClasses = new Integer[11];
-		this.toDerivatedClasses[0] = 0;// ARA
-		this.toDerivatedClasses[1] = 1;// CHI
-		this.toDerivatedClasses[2] = -1;// FRE
-		this.toDerivatedClasses[3] = -1;// GER
-		this.toDerivatedClasses[4] = 2;// HIN
-		this.toDerivatedClasses[5] = -1;// ITA
-		this.toDerivatedClasses[6] = 3;// JPN
-		this.toDerivatedClasses[7] = 4;// KOR
-		this.toDerivatedClasses[8] = -1;// SPA
-		this.toDerivatedClasses[9] = 5;// TEL
-		this.toDerivatedClasses[10] = 6;// TUR
+		this.toDerivatedClasses[0] = 0;// ARA *
+		this.toDerivatedClasses[1] = 1;// CHI *
+		this.toDerivatedClasses[2] = 7;// FRE
+		this.toDerivatedClasses[3] = 7;// GER
+		this.toDerivatedClasses[4] = 2;// HIN *
+		this.toDerivatedClasses[5] = 7;// ITA
+		this.toDerivatedClasses[6] = 3;// JPN *
+		this.toDerivatedClasses[7] = 4;// KOR *
+		this.toDerivatedClasses[8] = 7;// SPA
+		this.toDerivatedClasses[9] = 5;// TEL *
+		this.toDerivatedClasses[10] = 6;// TUR *
 	}
 
 	/*
@@ -53,6 +53,8 @@ public class ClassifierAsie extends Classifier {
 			return "TEL";
 		case 6:
 			return "TUR";
+		case 7:
+			return "EUR";
 		default:
 			return "???";
 		}

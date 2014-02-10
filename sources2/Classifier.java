@@ -2,6 +2,7 @@ package sources2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 /**
  * The abstract classifier is responsible for naive bayesien calculations, data
@@ -83,8 +84,15 @@ public abstract class Classifier {
 				continue;
 			}
 			// dictionary management
+			final Random r = new Random();
 			for (final Tweet t : classe) {
-				if (this.isUsable(t)) {
+				if (this.isUsable(t)) { // || r.nextFloat() > 0.8
+					localDatas.get(this.toDerivatedClasses[i]).add(t);
+					// localDatas.get(this.toDerivatedClasses[i]).add(t);
+					// localDatas.get(this.toDerivatedClasses[i]).add(t);
+					// localDatas.get(this.toDerivatedClasses[i]).add(t);
+					// localDatas.get(this.toDerivatedClasses[i]).add(t);
+				} else {
 					localDatas.get(this.toDerivatedClasses[i]).add(t);
 				}
 				for (final Integer word : t.getWords()) {

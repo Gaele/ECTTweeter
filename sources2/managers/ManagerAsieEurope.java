@@ -24,6 +24,7 @@ public class ManagerAsieEurope extends AbstractManager {
 	Classifier region = new ClassifierAsianEurope();
 	Classifier europe = new ClassifierEurope();
 	Classifier asia = new ClassifierAsie();
+	Classifier simple = new ClassifierSimple();
 
 	public ManagerAsieEurope() {
 		// precise the number of final classes (default = 0)
@@ -46,6 +47,7 @@ public class ManagerAsieEurope extends AbstractManager {
 		this.region.learn(this, datas, k, verbose);
 		this.europe.learn(this, datas, k, verbose);
 		this.asia.learn(this, datas, k, verbose);
+		this.simple.learn(this, datas, k, verbose);
 	}
 
 	/**
@@ -75,6 +77,7 @@ public class ManagerAsieEurope extends AbstractManager {
 		results.get(3).addAll(europeResult.get(1));
 		results.get(5).addAll(europeResult.get(2));
 		results.get(8).addAll(europeResult.get(3));
+		final ArrayList<Tweet> euroErrors = europeResult.get(4);
 
 		final ArrayList<ArrayList<Tweet>> asianResult = this.asia.work(
 				localResult.get(1), false);
@@ -85,6 +88,35 @@ public class ManagerAsieEurope extends AbstractManager {
 		results.get(7).addAll(asianResult.get(4));
 		results.get(9).addAll(asianResult.get(5));
 		results.get(10).addAll(asianResult.get(6));
+		final ArrayList<Tweet> asianErrors = asianResult.get(7);
+
+		final ArrayList<ArrayList<Tweet>> asianCorrected = this.simple.work(
+				asianErrors, false);
+		results.get(0).addAll(asianCorrected.get(0));
+		results.get(1).addAll(asianCorrected.get(1));
+		results.get(2).addAll(asianCorrected.get(2));
+		results.get(3).addAll(asianCorrected.get(3));
+		results.get(4).addAll(asianCorrected.get(4));
+		results.get(5).addAll(asianCorrected.get(5));
+		results.get(6).addAll(asianCorrected.get(6));
+		results.get(7).addAll(asianCorrected.get(7));
+		results.get(8).addAll(asianCorrected.get(8));
+		results.get(9).addAll(asianCorrected.get(9));
+		results.get(10).addAll(asianCorrected.get(10));
+
+		final ArrayList<ArrayList<Tweet>> euroCorrected = this.simple.work(
+				euroErrors, false);
+		results.get(0).addAll(euroCorrected.get(0));
+		results.get(1).addAll(euroCorrected.get(1));
+		results.get(2).addAll(euroCorrected.get(2));
+		results.get(3).addAll(euroCorrected.get(3));
+		results.get(4).addAll(euroCorrected.get(4));
+		results.get(5).addAll(euroCorrected.get(5));
+		results.get(6).addAll(euroCorrected.get(6));
+		results.get(7).addAll(euroCorrected.get(7));
+		results.get(8).addAll(euroCorrected.get(8));
+		results.get(9).addAll(euroCorrected.get(9));
+		results.get(10).addAll(euroCorrected.get(10));
 
 		return results;
 	}
