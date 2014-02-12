@@ -22,6 +22,14 @@ public abstract class AbstractManager {
 	 * Number of final classes
 	 */
 	protected int NB_CLASSES = 0;
+	/**
+	 * n of n-grams of words
+	 */
+	private int NGRAM_WORDS = 1;
+	/**
+	 * n of n-grams of letters
+	 */
+	private int NGRAM_LETTERS = 0;
 
 	/**
 	 * Local dictionary to manage local words. This is a sub-part of the global
@@ -35,8 +43,7 @@ public abstract class AbstractManager {
 	private final HashMap<String, Integer> occurrences = new HashMap<String, Integer>();
 
 	/**
-	 * To give a unique identifier to all words of this manager, in the
-	 * {@link #dictionary}
+	 * To give a unique identifier to all words of this manager, in the {@link #dictionary}
 	 */
 	private Integer nextId = 0;
 
@@ -50,8 +57,7 @@ public abstract class AbstractManager {
 	 * @param verbose
 	 *            diplays infos if true
 	 */
-	public abstract void learn(ArrayList<ArrayList<Tweet>> datas,
-			final double k, final boolean verbose);
+	public abstract void learn(ArrayList<ArrayList<Tweet>> datas, final double k, final boolean verbose);
 
 	/**
 	 * Calculates the languages of the datasTest
@@ -63,8 +69,7 @@ public abstract class AbstractManager {
 	 * @return analysed data,
 	 *         ListOfDerivedClasses<ListOfTweetsFor1DerivedClass<Tweet>>
 	 */
-	public abstract ArrayList<ArrayList<Tweet>> work(
-			final ArrayList<Tweet> dataTest, final boolean verbose);
+	public abstract ArrayList<ArrayList<Tweet>> work(final ArrayList<Tweet> dataTest, final boolean verbose);
 
 	/**
 	 * Print performance
@@ -75,8 +80,7 @@ public abstract class AbstractManager {
 	 *            displays infos if true
 	 * @return the accuracy in %
 	 */
-	public abstract double check(final ArrayList<ArrayList<Tweet>> res,
-			final boolean verbose);
+	public abstract double check(final ArrayList<ArrayList<Tweet>> res, final boolean verbose);
 
 	/**
 	 * Transform the text before it's translated by any classifier or manager
@@ -128,10 +132,8 @@ public abstract class AbstractManager {
 	 *            diplays infos if true
 	 * @return the average accuracy of the system
 	 */
-	public double crossValidation(final File f, final double k,
-			final boolean verbose) {
-		final ArrayList<ArrayList<ArrayList<Tweet>>> datas = this
-				.fileToArrayList(f, 10);
+	public double crossValidation(final File f, final double k, final boolean verbose) {
+		final ArrayList<ArrayList<ArrayList<Tweet>>> datas = this.fileToArrayList(f, 10);
 		final int size = datas.size();
 		final double[] results = new double[size];
 		// for all test
@@ -189,8 +191,7 @@ public abstract class AbstractManager {
 				datas.get(tweet.getPolarit()).add(tweet);
 			}
 			// rare words are removed from the dictionary
-			for (final Entry<String, Integer> entry : this.occurrences
-					.entrySet()) {
+			for (final Entry<String, Integer> entry : this.occurrences.entrySet()) {
 				if (entry.getValue() <= 10) {
 					this.dictionary.remove(entry.getKey());
 				}
@@ -227,8 +228,7 @@ public abstract class AbstractManager {
 				datas.add(tweet);
 			}
 			// rare words are removed from the dictionary
-			for (final Entry<String, Integer> entry : this.occurrences
-					.entrySet()) {
+			for (final Entry<String, Integer> entry : this.occurrences.entrySet()) {
 				if (entry.getValue() <= 10) {
 					this.dictionary.remove(entry.getKey());
 				}
@@ -256,8 +256,7 @@ public abstract class AbstractManager {
 	 * @return datas to use,
 	 *         nbOfBlocks<ListOfClasses<ListOfTweetsPerCLasse<Tweet>>>
 	 */
-	public ArrayList<ArrayList<ArrayList<Tweet>>> fileToArrayList(final File f,
-			final int nbArrayToCreate) {
+	public ArrayList<ArrayList<ArrayList<Tweet>>> fileToArrayList(final File f, final int nbArrayToCreate) {
 		BufferedReader br = null;
 		String line;
 		ArrayList<ArrayList<Tweet>> datas = new ArrayList<ArrayList<Tweet>>();
@@ -288,8 +287,7 @@ public abstract class AbstractManager {
 				cpt++;
 			}
 			// rare words are removed from the dictionary
-			for (final Entry<String, Integer> entry : this.occurrences
-					.entrySet()) {
+			for (final Entry<String, Integer> entry : this.occurrences.entrySet()) {
 				if (entry.getValue() <= 10) {
 					this.dictionary.remove(entry.getKey());
 				}
@@ -323,7 +321,7 @@ public abstract class AbstractManager {
 
 		// treat tokens
 		final String[] tokens = texte.split(" ");
-		final Integer[] words = this.getNumbersFromWords(tokens, 2, false);
+		final Integer[] words = this.getNumbersFromWords(tokens, NGRAM_WORDS, NGRAM_LETTERS);
 
 		// create tweet
 		return new Tweet(this.nti(polarite), this.nti2(marque), words);
@@ -336,87 +334,75 @@ public abstract class AbstractManager {
 	 * 
 	 * @param tweet
 	 *            Tokenizer (the list of words)
-	 * @param n
-	 *            number of words or letters in an n-gram
-	 * @param letterNgram
-	 *            false to make n-grams of words, true to make n-grams of
-	 *            letters
+	 * @param n1
+	 *            n for n-grams of words ; 0 to ignore them
+	 * @param n2
+	 *            n for n-grams of letters ; 0 to ignore them
 	 * @return tab with the codes of the n-grams in the dictionary
 	 */
-	public Integer[] getNumbersFromWords(final String[] tweet, final int n,
-			final boolean letterNgram) {
+	public Integer[] getNumbersFromWords(final String[] tweet, int n1, int n2) {
 
-		final int numberOfWords = tweet.length;
+		final ArrayList<Integer> nGrams = new ArrayList<Integer>();
 
 		// n-grams of words
-		if (letterNgram == false) {
-			// number of n-grams of words in the tweet
-			// = n (numberOfWords + numberOfWords - n + 1) / 2
-			// = n (2 * numberOfWords - n + 1) / 2
-			// example : n = 3, numberOfWords = 5 : n-grams = 5 + 4 + 3
-			final int numberOfNGrams = n * (2 * numberOfWords - n + 1) / 2;
-			final Integer[] nGrams = new Integer[numberOfNGrams];
-
-			int cpt = 0;
-			for (int i = 1; i <= n; i++) {
-				for (int j = 0; j < tweet.length - i + 1; j++) {
-					String nGram = null;
-					if (i == 1) {
-						nGram = tweet[j];
-					} else {
-						// concatenation of the n-gram (without spaces between
-						// words)
-						final StringBuilder sb = new StringBuilder();
-						for (int k = 0; k < i; k++) {
-							sb.append(tweet[j + k]);
-						}
-						nGram = sb.toString();
+		// number of n-grams of words in the tweet
+		// = n (numberOfWords + numberOfWords - n + 1) / 2
+		// = n (2 * numberOfWords - n + 1) / 2
+		// example: n = 3, numberOfWords = 5 : n-grams = 5 + 4 + 3
+		for (int i = 1; i <= n1; i++) {
+			for (int j = 0; j < tweet.length - i + 1; j++) {
+				String nGram = null;
+				if (i == 1) {
+					nGram = tweet[j];
+				} else {
+					// concatenation of the n-gram (without spaces between words)
+					StringBuilder sb = new StringBuilder();
+					for (int k = 0; k < i; k++) {
+						sb.append(tweet[j + k]);
 					}
-					final Integer nGramNumber = this.dictionary.get(nGram);
-					if (nGramNumber == null) {
-						this.dictionary.put(nGram, this.nextId);
-						this.occurrences.put(nGram, 1);
-						nGrams[cpt] = this.nextId;
-						this.nextId++;
-					} else {
-						nGrams[cpt] = nGramNumber;
-						final int occ = this.occurrences.get(nGram);
-						this.occurrences.put(nGram, occ + 1);
-					}
-					cpt++;
+					nGram = sb.toString();
+				}
+				final Integer nGramNumber = dictionary.get(nGram);
+				if (nGramNumber == null) {
+					dictionary.put(nGram, nextId);
+					occurrences.put(nGram, 1);
+					nGrams.add(nextId);
+					nextId++;
+				} else {
+					nGrams.add(nGramNumber);
+					int occ = occurrences.get(nGram);
+					occurrences.put(nGram, occ + 1);
 				}
 			}
-			return nGrams;
 		}
 		// n-grams of letters (each token considered separately, without spaces)
-		else {
-			final ArrayList<Integer> nGrams = new ArrayList<Integer>();
-			for (final String token : tweet) {
+		if (n2 > 0) {
+			for (String token : tweet) {
 				final char[] tokenChar = token.toCharArray();
-				for (int i = 1; i <= n; i++) {
+				for (int i = 1; i <= n2; i++) {
 					for (int j = 0; j < tokenChar.length - i + 1; j++) {
 						// concatenation of the n-gram
-						final StringBuilder sb = new StringBuilder();
+						StringBuilder sb = new StringBuilder();
 						for (int k = 0; k < i; k++) {
 							sb.append(tokenChar[j + k]);
 						}
 						final String nGram = sb.toString();
-						final Integer nGramNumber = this.dictionary.get(nGram);
+						final Integer nGramNumber = dictionary.get(nGram);
 						if (nGramNumber == null) {
-							this.dictionary.put(nGram, this.nextId);
-							this.occurrences.put(nGram, 1);
-							nGrams.add(this.nextId);
-							this.nextId++;
+							dictionary.put(nGram, nextId);
+							occurrences.put(nGram, 1);
+							nGrams.add(nextId);
+							nextId++;
 						} else {
 							nGrams.add(nGramNumber);
-							final int occ = this.occurrences.get(nGram);
-							this.occurrences.put(nGram, occ + 1);
+							int occ = occurrences.get(nGram);
+							occurrences.put(nGram, occ + 1);
 						}
 					}
 				}
 			}
-			return nGrams.toArray(new Integer[nGrams.size()]);
 		}
+		return nGrams.toArray(new Integer[nGrams.size()]);
 	}
 
 	/**
@@ -432,38 +418,31 @@ public abstract class AbstractManager {
 	 *            the accuracy of the calculus
 	 * @return the best k to use
 	 */
-	public double calculateMin(final File trainFile, final double min,
-			final double max, final double limit) {
+	public double calculateMin(final File trainFile, final double min, final double max, final double limit) {
 		final double middle = (max + min) / 2;
 		if (middle - min < limit) {
 			return middle;
 		}
 		final double littleMiddle = (middle + min) / 2;
 		final double bigMiddle = (max + middle) / 2;
-		final double littleMiddleValue = this.crossValidation(trainFile,
-				littleMiddle, false);
-		final double bigMiddleValue = this.crossValidation(trainFile,
-				bigMiddle, false);
+		final double littleMiddleValue = this.crossValidation(trainFile, littleMiddle, false);
+		final double bigMiddleValue = this.crossValidation(trainFile, bigMiddle, false);
 
 		if (littleMiddleValue < bigMiddleValue) {
-			System.out.println("k=" + littleMiddle + " => " + littleMiddleValue
-					+ " *");
+			System.out.println("k=" + littleMiddle + " => " + littleMiddleValue + " *");
 			System.out.println("k=" + bigMiddle + " => " + bigMiddleValue);
 			System.out.println("-----");
 			return this.calculateMin(trainFile, min, middle, limit);
 		} else {
-			System.out
-					.println("k=" + littleMiddle + " => " + littleMiddleValue);
-			System.out.println("k=" + bigMiddle + " => " + bigMiddleValue
-					+ " *");
+			System.out.println("k=" + littleMiddle + " => " + littleMiddleValue);
+			System.out.println("k=" + bigMiddle + " => " + bigMiddleValue + " *");
 			System.out.println("-----");
 			return this.calculateMin(trainFile, middle, max, limit);
 		}
 
 	}
 
-	public double calculateMinStrongly(final File trainFile, final double min,
-			final double max, final double limit) {
+	public double calculateMinStrongly(final File trainFile, final double min, final double max, final double limit) {
 		System.out.println("min=" + min + ", max=" + max + ", limit=" + limit);
 		final int NB_BLOCKS = 10;
 		final double step = (max - min) / NB_BLOCKS;
@@ -487,8 +466,7 @@ public abstract class AbstractManager {
 		}
 		System.out.println("keep k=" + minK);
 
-		return this.calculateMinStrongly(trainFile, Math.max(minK - step, min),
-				minK + step, limit);
+		return this.calculateMinStrongly(trainFile, Math.max(minK - step, min), minK + step, limit);
 	}
 
 	/**
