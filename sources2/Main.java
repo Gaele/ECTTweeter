@@ -4,8 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import sources2.classifiers.ClassifierLatin;
-import sources2.managers.ManagerRegions;
+import sources2.managers.SimpleManager;
 
 /**
  * This project is a student project. Teacher's page here :
@@ -45,13 +44,14 @@ public class Main {
 		// manager.check(res, true);
 
 		// test simple
-		// final AbstractManager simple = new SimpleManager();
-		// final ArrayList<ArrayList<Tweet>> datas =
-		// simple.fileToArrayList(learn);
-		// simple.learn(datas, 0.1, true);
-		// final ArrayList<Tweet> dataTest = simple.fileToSimpleArrayList(test);
-		// final ArrayList<ArrayList<Tweet>> res = simple.work(dataTest, true);
-		// simple.check(res, true);
+		final AbstractManager simple = new SimpleManager();
+		final ArrayList<ArrayList<Tweet>> datas =
+				simple.fileToArrayList(learn);
+		//		simple.learn(datas, 0.1, true);
+		//		final ArrayList<Tweet> dataTest = simple.fileToSimpleArrayList(test);
+		//		final ArrayList<ArrayList<Tweet>> res = simple.work(dataTest, true);
+		//		simple.check(res, true);
+		simple.crossValidation(learn, 0.1, false);
 
 		// Classifieur region
 		// final AbstractManager region = new ManagerRegions();
@@ -66,15 +66,15 @@ public class Main {
 		// classifierRegions.calculateAndDisplayConfusionMatrix(res);
 
 		// Classifieur latin
-		final AbstractManager region = new ManagerRegions();
-		final ArrayList<ArrayList<Tweet>> datas = region.fileToArrayList(learn);
-		final Classifier classifierRegions = new ClassifierLatin();
-		classifierRegions.learn(region, datas, 0.1, false);
-		final ArrayList<Tweet> dataTest = region.fileToSimpleArrayList(test);
-		final ArrayList<ArrayList<Tweet>> res = classifierRegions.work(
-				dataTest, true);
-		classifierRegions.check(res, true);
-		classifierRegions.calculateAndDisplayConfusionMatrix(res);
+		//		final AbstractManager region = new ManagerRegions();
+		//		final ArrayList<ArrayList<Tweet>> datas = region.fileToArrayList(learn);
+		//		final Classifier classifierRegions = new ClassifierLatin();
+		//		classifierRegions.learn(region, datas, 0.1, false);
+		//		final ArrayList<Tweet> dataTest = region.fileToSimpleArrayList(test);
+		//		final ArrayList<ArrayList<Tweet>> res = classifierRegions.work(
+		//				dataTest, true);
+		//		classifierRegions.check(res, true);
+		//		classifierRegions.calculateAndDisplayConfusionMatrix(res);
 
 		// test crossvalidation
 		// final AbstractManager simple = new SimpleManager();
