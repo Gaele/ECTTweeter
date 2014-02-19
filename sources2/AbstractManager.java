@@ -164,7 +164,7 @@ public abstract class AbstractManager {
 			// make calculus
 			learn(learning, k, verbose);
 			final ArrayList<ArrayList<Tweet>> res = work(test, true);
-			//			resTotal.addAll(res);
+			// resTotal.addAll(res);
 			for (int classe = 0; classe < NB_CLASSES; classe++) {
 				resTotal.get(classe).addAll(res.get(classe));
 			}
@@ -195,7 +195,6 @@ public abstract class AbstractManager {
 	 */
 	public ArrayList<ArrayList<Tweet>> fileToArrayList(final File f) {
 
-
 		BufferedReader br = null;
 		String line;
 		final ArrayList<ArrayList<Tweet>> datas = new ArrayList<ArrayList<Tweet>>();
@@ -210,7 +209,7 @@ public abstract class AbstractManager {
 			}
 			// rare words are removed from the dictionary
 			for (final Entry<String, Integer> entry : occurrences.entrySet()) {
-				if (entry.getValue() <= 10) {
+				if (entry.getValue() <= 2) {
 					dictionary.remove(entry.getKey());
 				}
 			}
@@ -247,7 +246,7 @@ public abstract class AbstractManager {
 			}
 			// rare words are removed from the dictionary
 			for (final Entry<String, Integer> entry : occurrences.entrySet()) {
-				if (entry.getValue() <= 10) {
+				if (entry.getValue() <= 2) {
 					dictionary.remove(entry.getKey());
 				}
 			}
@@ -306,7 +305,7 @@ public abstract class AbstractManager {
 			}
 			// rare words are removed from the dictionary
 			for (final Entry<String, Integer> entry : occurrences.entrySet()) {
-				if (entry.getValue() <= 10) {
+				if (entry.getValue() <= 2) {
 					dictionary.remove(entry.getKey());
 				}
 			}
@@ -358,9 +357,11 @@ public abstract class AbstractManager {
 	 *            n for n-grams of letters ; 0 to ignore them
 	 * @return tab with the codes of the n-grams in the dictionary
 	 */
-	public Integer[] getNumbersFromWords(final String[] tweet, final int n1, final int n2) {
+	public Integer[] getNumbersFromWords(final String[] tweet, int n1, int n2) {
 
 		final ArrayList<Integer> nGrams = new ArrayList<Integer>();
+		int nbApostrophes = 0;
+		int nbArticles = 0;
 
 		// n-grams of words
 		// number of n-grams of words in the tweet
@@ -370,11 +371,18 @@ public abstract class AbstractManager {
 		for (int i = 1; i <= n1; i++) {
 			for (int j = 0; j < tweet.length - i + 1; j++) {
 				String nGram = null;
-				if (i == 1) {
+				if (i == 1) { // the word itself; no concatenation needed
 					nGram = tweet[j];
-				} else {
-					// concatenation of the n-gram (without spaces between words)
-					final StringBuilder sb = new StringBuilder();
+					// begin tagging count
+					if (tweet[j].startsWith("'")) {
+						nbApostrophes++;
+					}
+					if (tweet[j].equals("a") || tweet[j].equals("an") || tweet[j].equals("the")) {
+						nbArticles++;
+					}
+					// end tagging count
+				} else { // concatenation of the n-gram (without spaces between words)
+					StringBuilder sb = new StringBuilder();
 					for (int k = 0; k < i; k++) {
 						sb.append(tweet[j + k]);
 					}
@@ -388,19 +396,37 @@ public abstract class AbstractManager {
 					nextId++;
 				} else {
 					nGrams.add(nGramNumber);
-					final int occ = occurrences.get(nGram);
+					int occ = occurrences.get(nGram);
 					occurrences.put(nGram, occ + 1);
 				}
 			}
 		}
+
+		double apostrophesRatio = (double) nbApostrophes / (double) tweet.length;
+		double articlesRatio = (double) nbArticles / (double) tweet.length;
+
+		int pourcentageApostrophes = (int) Math.round(apostrophesRatio * 100);
+		int pourcentageArticles = (int) Math.round(articlesRatio * 100);
+
+		dictionary.put("{{apostrophe}}", nextId);
+		for (int i = 0; i < pourcentageApostrophes; i++) {
+			nGrams.add(nextId);
+		}
+		nextId++;
+		dictionary.put("{{article}}", nextId);
+		for (int i = 0; i < pourcentageArticles; i++) {
+			nGrams.add(nextId);
+		}
+		nextId++;
+
 		// n-grams of letters (each token considered separately, without spaces)
 		if (n2 > 0) {
-			for (final String token : tweet) {
+			for (String token : tweet) {
 				final char[] tokenChar = token.toCharArray();
 				for (int i = 1; i <= n2; i++) {
 					for (int j = 0; j < tokenChar.length - i + 1; j++) {
 						// concatenation of the n-gram
-						final StringBuilder sb = new StringBuilder();
+						StringBuilder sb = new StringBuilder();
 						for (int k = 0; k < i; k++) {
 							sb.append(tokenChar[j + k]);
 						}
@@ -413,7 +439,7 @@ public abstract class AbstractManager {
 							nextId++;
 						} else {
 							nGrams.add(nGramNumber);
-							final int occ = occurrences.get(nGram);
+							int occ = occurrences.get(nGram);
 							occurrences.put(nGram, occ + 1);
 						}
 					}
