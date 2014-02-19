@@ -11,24 +11,24 @@ import sources2.Tweet;
  * @author vincent
  * 
  */
-public class ClassifierIndTel extends Classifier {
+public class ClassifierAltaique3Groupes extends Classifier {
 
-	public ClassifierIndTel() {
+	public ClassifierAltaique3Groupes() {
 		super();
-		NB_CLASSES_DERIVEES = 3;
+		NB_CLASSES_DERIVEES = 4;
 
 		toDerivatedClasses = new Integer[11];
-		toDerivatedClasses[0] = 2;// ARA
-		toDerivatedClasses[1] = 2;// CHI
-		toDerivatedClasses[2] = 2;// FRE
-		toDerivatedClasses[3] = 2;// GER
-		toDerivatedClasses[4] = 0;// HIN *
-		toDerivatedClasses[5] = 2;// ITA
-		toDerivatedClasses[6] = 2;// JPN
-		toDerivatedClasses[7] = 2;// KOR
-		toDerivatedClasses[8] = 2;// SPA
-		toDerivatedClasses[9] = 1;// TEL *
-		toDerivatedClasses[10] = 2;// TUR
+		toDerivatedClasses[0] = 3;// ARA
+		toDerivatedClasses[1] = 0;// CHI *
+		toDerivatedClasses[2] = 3;// FRE
+		toDerivatedClasses[3] = 3;// GER
+		toDerivatedClasses[4] = 3;// HIN
+		toDerivatedClasses[5] = 3;// ITA
+		toDerivatedClasses[6] = 1;// JPN *
+		toDerivatedClasses[7] = 2;// KOR *
+		toDerivatedClasses[8] = 3;// SPA
+		toDerivatedClasses[9] = 3;// TEL
+		toDerivatedClasses[10] = 3;// TUR
 	}
 
 	/*
@@ -40,10 +40,12 @@ public class ClassifierIndTel extends Classifier {
 	public String itn(final Integer polarity) {
 		switch (polarity) {
 		case 0:
-			return "HIN";
+			return "CHI";
 		case 1:
-			return "TEL";
+			return "JPN";
 		case 2:
+			return "KOR";
+		case 3:
 			return "ERR";
 		default:
 			return "???";
@@ -57,7 +59,7 @@ public class ClassifierIndTel extends Classifier {
 	 */
 	@Override
 	public boolean isUsable(final Tweet t) {
-		if (t.getPolarit() == 4 || t.getPolarit() == 9) {
+		if (t.getPolarit() == 1 || t.getPolarit() == 6 || t.getPolarit() == 7) {
 			return true;
 		}
 		return false;

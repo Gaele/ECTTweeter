@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import sources2.managers.SimpleManager;
+import sources2.managers.ManagerRegions2;
 
 /**
  * This project is a student project. Teacher's page here :
@@ -34,36 +34,36 @@ public class Main {
 		final File test = new File("src/dataProject/internTest.txt");
 
 		// Pipe lined test
-		// final AbstractManager manager = new ManagerAsieEurope();
-		// final ArrayList<ArrayList<Tweet>> datas = manager
-		// .fileToArrayList(learn);
-		// manager.learn(datas, 0.1, true);
-		// final ArrayList<Tweet> dataTest =
-		// manager.fileToSimpleArrayList(test);
-		// final ArrayList<ArrayList<Tweet>> res = manager.work(dataTest, true);
-		// manager.check(res, true);
+		final AbstractManager manager = new ManagerRegions2();
+		final ArrayList<ArrayList<Tweet>> datas = manager
+				.fileToArrayList(learn);
+		manager.learn(datas, 0.1, false);
+		final ArrayList<Tweet> dataTest =
+				manager.fileToSimpleArrayList(test);
+		final ArrayList<ArrayList<Tweet>> res = manager.work(dataTest, true);
+		manager.check(res, true);
 
 		// test simple
-		final AbstractManager simple = new SimpleManager();
-		final ArrayList<ArrayList<Tweet>> datas =
-				simple.fileToArrayList(learn);
+		//		final AbstractManager simple = new SimpleManager();
+		//		final ArrayList<ArrayList<Tweet>> datas =
+		//				simple.fileToArrayList(learn);
 		//		simple.learn(datas, 0.1, true);
 		//		final ArrayList<Tweet> dataTest = simple.fileToSimpleArrayList(test);
 		//		final ArrayList<ArrayList<Tweet>> res = simple.work(dataTest, true);
 		//		simple.check(res, true);
-		simple.crossValidation(learn, 0.1, false);
+		//		simple.crossValidation(learn, 0.1, false);
 
 		// Classifieur region
-		// final AbstractManager region = new ManagerRegions();
-		// final ArrayList<ArrayList<Tweet>> datas =
-		// region.fileToArrayList(learn);
-		// final Classifier classifierRegions = new ClassifierRegions();
-		// classifierRegions.learn(region, datas, 0.1, false);
-		// final ArrayList<Tweet> dataTest = region.fileToSimpleArrayList(test);
-		// final ArrayList<ArrayList<Tweet>> res = classifierRegions.work(
-		// dataTest, true);
-		// classifierRegions.check(res, true);
-		// classifierRegions.calculateAndDisplayConfusionMatrix(res);
+		//		final AbstractManager region = new ManagerRegions2();
+		//		final ArrayList<ArrayList<Tweet>> datas =
+		//				region.fileToArrayList(learn);
+		//		final Classifier classifierRegions = new ClassifierRegions3Groupes();
+		//		classifierRegions.learn(region, datas, 0.1, false);
+		//		final ArrayList<Tweet> dataTest = region.fileToSimpleArrayList(test);
+		//		final ArrayList<ArrayList<Tweet>> res = classifierRegions.work(
+		//				dataTest, true);
+		//		classifierRegions.check(res, true);
+		//		classifierRegions.calculateAndDisplayConfusionMatrix(res);
 
 		// Classifieur latin
 		//		final AbstractManager region = new ManagerRegions();
@@ -91,7 +91,6 @@ public class Main {
 
 		System.out.println("\n\n> TOTAL TIME : " + (System.nanoTime() - start)
 				/ 1000000000 + " sec");
-
 	}
 
 }

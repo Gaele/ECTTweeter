@@ -11,24 +11,24 @@ import sources2.Tweet;
  * @author vincent
  * 
  */
-public class ClassifierRegions extends Classifier {
+public class ClassifierRegions3Groupes extends Classifier {
 
-	public ClassifierRegions() {
+	public ClassifierRegions3Groupes() {
 		super();
-		this.NB_CLASSES_DERIVEES = 4;
+		NB_CLASSES_DERIVEES = 3;
 
-		this.toDerivatedClasses = new Integer[11];
-		this.toDerivatedClasses[0] = 2;// ARA
-		this.toDerivatedClasses[1] = 1;// CHI
-		this.toDerivatedClasses[2] = 0;// FRE
-		this.toDerivatedClasses[3] = 0;// GER
-		this.toDerivatedClasses[4] = 3;// HIN
-		this.toDerivatedClasses[5] = 0;// ITA
-		this.toDerivatedClasses[6] = 1;// JPN
-		this.toDerivatedClasses[7] = 1;// KOR
-		this.toDerivatedClasses[8] = 0;// SPA
-		this.toDerivatedClasses[9] = 3;// TEL
-		this.toDerivatedClasses[10] = 1;// TUR
+		toDerivatedClasses = new Integer[11];
+		toDerivatedClasses[0] = 2;// ARA
+		toDerivatedClasses[1] = 1;// CHI
+		toDerivatedClasses[2] = 0;// FRE
+		toDerivatedClasses[3] = 0;// GER
+		toDerivatedClasses[4] = 2;// HIN
+		toDerivatedClasses[5] = 0;// ITA
+		toDerivatedClasses[6] = 1;// JPN
+		toDerivatedClasses[7] = 1;// KOR
+		toDerivatedClasses[8] = 0;// SPA
+		toDerivatedClasses[9] = 2;// TEL
+		toDerivatedClasses[10] = 2;// TUR
 	}
 
 	/*
@@ -44,11 +44,7 @@ public class ClassifierRegions extends Classifier {
 		case 1:
 			return "TAI";
 		case 2:
-			return "ARA";
-		case 3:
-			return "INT"; // indien / telugu
-		case 4:
-			return "ARA";
+			return "IDE";
 		default:
 			return "???";
 		}

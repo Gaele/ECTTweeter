@@ -11,24 +11,24 @@ import sources2.Tweet;
  * @author vincent
  * 
  */
-public class ClassifierIndTel extends Classifier {
+public class ClassifierEurasiatique extends Classifier {
 
-	public ClassifierIndTel() {
+	public ClassifierEurasiatique() {
 		super();
-		NB_CLASSES_DERIVEES = 3;
+		NB_CLASSES_DERIVEES = 5;
 
 		toDerivatedClasses = new Integer[11];
-		toDerivatedClasses[0] = 2;// ARA
-		toDerivatedClasses[1] = 2;// CHI
-		toDerivatedClasses[2] = 2;// FRE
-		toDerivatedClasses[3] = 2;// GER
+		toDerivatedClasses[0] = 2;// ARA *
+		toDerivatedClasses[1] = 4;// CHI
+		toDerivatedClasses[2] = 4;// FRE
+		toDerivatedClasses[3] = 4;// GER
 		toDerivatedClasses[4] = 0;// HIN *
-		toDerivatedClasses[5] = 2;// ITA
-		toDerivatedClasses[6] = 2;// JPN
-		toDerivatedClasses[7] = 2;// KOR
-		toDerivatedClasses[8] = 2;// SPA
+		toDerivatedClasses[5] = 4;// ITA
+		toDerivatedClasses[6] = 4;// JPN
+		toDerivatedClasses[7] = 4;// KOR
+		toDerivatedClasses[8] = 4;// SPA
 		toDerivatedClasses[9] = 1;// TEL *
-		toDerivatedClasses[10] = 2;// TUR
+		toDerivatedClasses[10] = 3;// TUR *
 	}
 
 	/*
@@ -44,6 +44,10 @@ public class ClassifierIndTel extends Classifier {
 		case 1:
 			return "TEL";
 		case 2:
+			return "ARA";
+		case 3:
+			return "TUR";
+		case 4:
 			return "ERR";
 		default:
 			return "???";
@@ -57,7 +61,7 @@ public class ClassifierIndTel extends Classifier {
 	 */
 	@Override
 	public boolean isUsable(final Tweet t) {
-		if (t.getPolarit() == 4 || t.getPolarit() == 9) {
+		if (t.getPolarit() == 0 || t.getPolarit() == 4 || t.getPolarit() == 9 || t.getPolarit() == 10) {
 			return true;
 		}
 		return false;

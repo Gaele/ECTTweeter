@@ -2,7 +2,6 @@ package sources2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
 /**
  * The abstract classifier is responsible for naive bayesien calculations, data
@@ -38,9 +37,9 @@ public abstract class Classifier {
 	/**
 	 * for the calculus
 	 */
-	double[] py;
-	double[][] byw;
-	double[] alpha;
+	double[] py; // = new double[NB_CLASSES_DERIVEES];
+	double[][] byw; // = new double[NB_CLASSES_DERIVEES][1];
+	double[] alpha; // = new double[NB_CLASSES_DERIVEES];
 
 	public Classifier() {
 		localDictionary = new HashMap<Integer, Integer>();
@@ -84,7 +83,7 @@ public abstract class Classifier {
 				continue;
 			}
 			// dictionary management
-			final Random r = new Random();
+			// final Random r = new Random();
 			for (final Tweet t : classe) {
 				if (isUsable(t)) { // || r.nextFloat() > 0.8
 					localDatas.get(toDerivatedClasses[i]).add(t);
@@ -137,8 +136,8 @@ public abstract class Classifier {
 		// Initialises data structures for Bayesian calculations
 		py = new double[NB_CLASSES_DERIVEES];
 		alpha = new double[NB_CLASSES_DERIVEES];
-		byw = new double[NB_CLASSES_DERIVEES][localDictionary
-		                                      .size()];
+		byw = new double[NB_CLASSES_DERIVEES][localDictionary.size()];
+
 		// Calculates Py
 		calculatePy(datas);
 		final Long endPy = System.nanoTime();
@@ -293,7 +292,9 @@ public abstract class Classifier {
 				} catch (final ArrayIndexOutOfBoundsException e) {
 				}
 			}
+			//			System.out.println("py: "+py[i]+", logPXY: "+logPXY);
 			final double nouvelleValeur = logPXY + py[i];
+			//			System.out.println(nouvelleValeur);
 			if (maxLogPXY < nouvelleValeur) {
 				classe = i;
 				maxLogPXY = nouvelleValeur;
@@ -325,6 +326,7 @@ public abstract class Classifier {
 				continue;
 			}
 			final int classe = calculatePxy2(t);
+			//			System.out.println(classe);//////////////////////////
 			result.get(classe).add(t);
 		}
 		return result;

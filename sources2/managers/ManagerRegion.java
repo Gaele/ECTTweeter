@@ -5,11 +5,10 @@ import java.util.ArrayList;
 import sources2.AbstractManager;
 import sources2.Classifier;
 import sources2.Tweet;
-import sources2.classifiers.ClassifierAltaique;
-import sources2.classifiers.ClassifierArabe;
-import sources2.classifiers.ClassifierIndTel;
-import sources2.classifiers.ClassifierLatin;
-import sources2.classifiers.ClassifierRegions4Groupes;
+import sources2.classifiers.ClassifierAsianEurope;
+import sources2.classifiers.ClassifierAsie;
+import sources2.classifiers.ClassifierEurope;
+import sources2.classifiers.ClassifierSimple;
 
 /**
  * Use 3 Classifiers to cut corpus into Asian and European part and find final
@@ -19,16 +18,15 @@ import sources2.classifiers.ClassifierRegions4Groupes;
  * @author vincent
  * 
  */
-public class ManagerRegions extends AbstractManager {
+public class ManagerRegion extends AbstractManager {
 
 	// classifiers
-	Classifier region = new ClassifierRegions4Groupes();
-	Classifier arabe = new ClassifierArabe();
-	Classifier altaique = new ClassifierAltaique();
-	Classifier indtel = new ClassifierIndTel();
-	Classifier latin = new ClassifierLatin();
+	Classifier region = new ClassifierAsianEurope();
+	Classifier europe = new ClassifierEurope();
+	Classifier asia = new ClassifierAsie();
+	Classifier simple = new ClassifierSimple();
 
-	public ManagerRegions() {
+	public ManagerRegion() {
 		// precise the number of final classes (default = 0)
 		this.NB_CLASSES = 11;
 	}
@@ -47,11 +45,9 @@ public class ManagerRegions extends AbstractManager {
 	public void learn(final ArrayList<ArrayList<Tweet>> datas, final double k,
 			final boolean verbose) {
 		this.region.learn(this, datas, k, verbose);
-		this.region.learn(this, datas, k, verbose);
-		this.region.learn(this, datas, k, verbose);
-		this.region.learn(this, datas, k, verbose);
-		this.region.learn(this, datas, k, verbose);
-
+		this.europe.learn(this, datas, k, verbose);
+		this.asia.learn(this, datas, k, verbose);
+		this.simple.learn(this, datas, k, verbose);
 	}
 
 	/**
@@ -71,67 +67,56 @@ public class ManagerRegions extends AbstractManager {
 		for (int i = 0; i < this.NB_CLASSES; i++) {
 			results.add(new ArrayList<Tweet>());
 		}
-		// final ArrayList<ArrayList<Tweet>> localResult;// = new
-		// ArrayList<ArrayList<Tweet>>();
-		// localResult = this.region.work(dataTest, true);
-		results.get(0).addAll(this.region.work(dataTest, true).get(0));
-		results.get(1).addAll(this.region.work(dataTest, true).get(1));
-		results.get(2).addAll(this.region.work(dataTest, true).get(2));
-		results.get(3).addAll(this.region.work(dataTest, true).get(3));
-		results.get(4).addAll(this.region.work(dataTest, true).get(4));
-		results.get(5).addAll(this.region.work(dataTest, true).get(5));
-		results.get(6).addAll(this.region.work(dataTest, true).get(6));
-		results.get(7).addAll(this.region.work(dataTest, true).get(7));
-		results.get(8).addAll(this.region.work(dataTest, true).get(8));
-		results.get(9).addAll(this.region.work(dataTest, true).get(9));
-		results.get(10).addAll(this.region.work(dataTest, true).get(10));
+		final ArrayList<ArrayList<Tweet>> localResult;// = new
+														// ArrayList<ArrayList<Tweet>>();
+		localResult = this.region.work(dataTest, true);
 
-		// final ArrayList<ArrayList<Tweet>> europeResult = this.europe.work(
-		// localResult.get(0), false);
-		// results.get(2).addAll(europeResult.get(0));
-		// results.get(3).addAll(europeResult.get(1));
-		// results.get(5).addAll(europeResult.get(2));
-		// results.get(8).addAll(europeResult.get(3));
-		// final ArrayList<Tweet> euroErrors = europeResult.get(4);
-		//
-		// final ArrayList<ArrayList<Tweet>> asianResult = this.asia.work(
-		// localResult.get(1), false);
-		// results.get(0).addAll(asianResult.get(0));
-		// results.get(1).addAll(asianResult.get(1));
-		// results.get(4).addAll(asianResult.get(2));
-		// results.get(6).addAll(asianResult.get(3));
-		// results.get(7).addAll(asianResult.get(4));
-		// results.get(9).addAll(asianResult.get(5));
-		// results.get(10).addAll(asianResult.get(6));
-		// final ArrayList<Tweet> asianErrors = asianResult.get(7);
-		//
-		// final ArrayList<ArrayList<Tweet>> asianCorrected = this.simple.work(
-		// asianErrors, false);
-		// results.get(0).addAll(asianCorrected.get(0));
-		// results.get(1).addAll(asianCorrected.get(1));
-		// results.get(2).addAll(asianCorrected.get(2));
-		// results.get(3).addAll(asianCorrected.get(3));
-		// results.get(4).addAll(asianCorrected.get(4));
-		// results.get(5).addAll(asianCorrected.get(5));
-		// results.get(6).addAll(asianCorrected.get(6));
-		// results.get(7).addAll(asianCorrected.get(7));
-		// results.get(8).addAll(asianCorrected.get(8));
-		// results.get(9).addAll(asianCorrected.get(9));
-		// results.get(10).addAll(asianCorrected.get(10));
-		//
-		// final ArrayList<ArrayList<Tweet>> euroCorrected = this.simple.work(
-		// euroErrors, false);
-		// results.get(0).addAll(euroCorrected.get(0));
-		// results.get(1).addAll(euroCorrected.get(1));
-		// results.get(2).addAll(euroCorrected.get(2));
-		// results.get(3).addAll(euroCorrected.get(3));
-		// results.get(4).addAll(euroCorrected.get(4));
-		// results.get(5).addAll(euroCorrected.get(5));
-		// results.get(6).addAll(euroCorrected.get(6));
-		// results.get(7).addAll(euroCorrected.get(7));
-		// results.get(8).addAll(euroCorrected.get(8));
-		// results.get(9).addAll(euroCorrected.get(9));
-		// results.get(10).addAll(euroCorrected.get(10));
+		final ArrayList<ArrayList<Tweet>> europeResult = this.europe.work(
+				localResult.get(0), false);
+		results.get(2).addAll(europeResult.get(0));
+		results.get(3).addAll(europeResult.get(1));
+		results.get(5).addAll(europeResult.get(2));
+		results.get(8).addAll(europeResult.get(3));
+		final ArrayList<Tweet> euroErrors = europeResult.get(4);
+
+		final ArrayList<ArrayList<Tweet>> asianResult = this.asia.work(
+				localResult.get(1), false);
+		results.get(0).addAll(asianResult.get(0));
+		results.get(1).addAll(asianResult.get(1));
+		results.get(4).addAll(asianResult.get(2));
+		results.get(6).addAll(asianResult.get(3));
+		results.get(7).addAll(asianResult.get(4));
+		results.get(9).addAll(asianResult.get(5));
+		results.get(10).addAll(asianResult.get(6));
+		final ArrayList<Tweet> asianErrors = asianResult.get(7);
+
+		final ArrayList<ArrayList<Tweet>> asianCorrected = this.simple.work(
+				asianErrors, false);
+		results.get(0).addAll(asianCorrected.get(0));
+		results.get(1).addAll(asianCorrected.get(1));
+		results.get(2).addAll(asianCorrected.get(2));
+		results.get(3).addAll(asianCorrected.get(3));
+		results.get(4).addAll(asianCorrected.get(4));
+		results.get(5).addAll(asianCorrected.get(5));
+		results.get(6).addAll(asianCorrected.get(6));
+		results.get(7).addAll(asianCorrected.get(7));
+		results.get(8).addAll(asianCorrected.get(8));
+		results.get(9).addAll(asianCorrected.get(9));
+		results.get(10).addAll(asianCorrected.get(10));
+
+		final ArrayList<ArrayList<Tweet>> euroCorrected = this.simple.work(
+				euroErrors, false);
+		results.get(0).addAll(euroCorrected.get(0));
+		results.get(1).addAll(euroCorrected.get(1));
+		results.get(2).addAll(euroCorrected.get(2));
+		results.get(3).addAll(euroCorrected.get(3));
+		results.get(4).addAll(euroCorrected.get(4));
+		results.get(5).addAll(euroCorrected.get(5));
+		results.get(6).addAll(euroCorrected.get(6));
+		results.get(7).addAll(euroCorrected.get(7));
+		results.get(8).addAll(euroCorrected.get(8));
+		results.get(9).addAll(euroCorrected.get(9));
+		results.get(10).addAll(euroCorrected.get(10));
 
 		return results;
 	}
@@ -148,7 +133,7 @@ public class ManagerRegions extends AbstractManager {
 	@Override
 	public double check(final ArrayList<ArrayList<Tweet>> res,
 			final boolean verbose) {
-		final Classifier simple = new ClassifierRegions4Groupes();
+		final Classifier simple = new ClassifierSimple();
 		final double accuracy = simple.check(res, verbose);
 		if (verbose) {
 			simple.calculateAndDisplayConfusionMatrix(res);
