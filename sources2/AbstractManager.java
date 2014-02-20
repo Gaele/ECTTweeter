@@ -1,13 +1,18 @@
 package sources2;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.TreeSet;
 
 import sources2.classifiers.ClassifierSimple;
 
@@ -27,7 +32,7 @@ public abstract class AbstractManager {
 	/**
 	 * n of n-grams of words
 	 */
-	private final int NGRAM_WORDS = 1;
+	private final int NGRAM_WORDS = 2;
 	/**
 	 * n of n-grams of letters
 	 */
@@ -123,6 +128,33 @@ public abstract class AbstractManager {
 	public abstract String itn(final Integer polarite);
 
 	/**
+	 * Writes polarities found by the system in a file and in the standard output stream.
+	 * 
+	 * @throws IOException
+	 */
+	public void writeResult(ArrayList<ArrayList<Tweet>> results, File resultFile) throws IOException {
+
+		OutputStream ops = new FileOutputStream(resultFile);
+		OutputStreamWriter opsr = new OutputStreamWriter(ops);
+		BufferedWriter bw = new BufferedWriter(opsr);
+
+		// we sort the tweets by their appearance order in the corpus
+		TreeSet<Tweet> sortedResult = new TreeSet<Tweet>(new Tweet.MyComp());
+		for (ArrayList<Tweet> array : results) {
+			for (Tweet tweet : array) {
+				sortedResult.add(tweet);
+			}
+		}
+		for (Tweet tweet : sortedResult) {
+			String polarity = this.itn(tweet.getPolarit());
+			bw.write(polarity);
+			bw.newLine();
+			System.out.println(polarity);
+		}
+		bw.close();
+	}
+
+	/**
 	 * Make the system learn 10 times on 9/10 of a file and test on the last
 	 * 1/10.
 	 * 
@@ -203,9 +235,11 @@ public abstract class AbstractManager {
 		}
 		try {
 			br = new BufferedReader(new FileReader(f));
+			int id = 1;
 			while ((line = br.readLine()) != null) {
-				final Tweet tweet = getTweet(line);
+				final Tweet tweet = getTweet(line, id);
 				datas.get(tweet.getPolarit()).add(tweet);
+				id++;
 			}
 			// rare words are removed from the dictionary
 			for (final Entry<String, Integer> entry : occurrences.entrySet()) {
@@ -240,9 +274,11 @@ public abstract class AbstractManager {
 		final ArrayList<Tweet> datas = new ArrayList<Tweet>();
 		try {
 			br = new BufferedReader(new FileReader(f));
+			int id = 1;
 			while ((line = br.readLine()) != null) {
-				final Tweet tweet = getTweet(line);
+				final Tweet tweet = getTweet(line, id);
 				datas.add(tweet);
+				id++;
 			}
 			// rare words are removed from the dictionary
 			for (final Entry<String, Integer> entry : occurrences.entrySet()) {
@@ -289,6 +325,7 @@ public abstract class AbstractManager {
 			br.close();
 			br = new BufferedReader(new FileReader(f));
 			int cpt = 0;
+			int id = 1;
 			while ((line = br.readLine()) != null) {
 				if (cpt % nbDataPerArray == 0) {
 					if (cpt != 0) {
@@ -299,9 +336,10 @@ public abstract class AbstractManager {
 						datas.add(new ArrayList<Tweet>());
 					}
 				}
-				final Tweet tweet = getTweet(line);
+				final Tweet tweet = getTweet(line, id);
 				datas.get(tweet.getPolarit()).add(tweet);
 				cpt++;
+				id++;
 			}
 			// rare words are removed from the dictionary
 			for (final Entry<String, Integer> entry : occurrences.entrySet()) {
@@ -329,7 +367,7 @@ public abstract class AbstractManager {
 	 * @param line
 	 * @return a Tweet
 	 */
-	private Tweet getTweet(final String line) {
+	private Tweet getTweet(final String line, final int id) {
 		final Integer middle = line.indexOf(")");
 		String texte = line.substring(middle + 2, line.length());
 		texte = filter(texte);
@@ -341,7 +379,7 @@ public abstract class AbstractManager {
 		final Integer[] words = getNumbersFromWords(tokens, NGRAM_WORDS, NGRAM_LETTERS);
 
 		// create tweet
-		return new Tweet(nti(polarite), nti2(marque), words);
+		return new Tweet(nti(polarite), nti2(marque), words, id);
 	}
 
 	/**

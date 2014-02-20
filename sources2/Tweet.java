@@ -1,5 +1,6 @@
 package sources2;
 
+import java.util.Comparator;
 import java.util.HashSet;
 
 /**
@@ -11,13 +12,17 @@ import java.util.HashSet;
 public class Tweet {
 
 	/**
+	 * A unique identifier of the tweet in the corpus, by order of appearance.
+	 */
+	private final int id;
+
+	/**
 	 * The main information to analyse
 	 */
 	private final int polarite;
 
 	/**
-	 * The second information to analyse which can help us to forecast
-	 * {@link #polarite}
+	 * The second information to analyse which can help us to forecast {@link #polarite}
 	 */
 	private final int marque;
 
@@ -26,7 +31,8 @@ public class Tweet {
 	 */
 	private final Integer[] words;
 
-	public Tweet(final int polarite, final int marque, final Integer[] w) {
+	public Tweet(final int polarite, final int marque, final Integer[] w, int id) {
+		this.id = id;
 		this.polarite = polarite;
 		this.marque = marque;
 		// get unique words
@@ -102,6 +108,21 @@ public class Tweet {
 			}
 		}
 		return s;
+	}
+
+	// used to retrieve tweets by their appearance order in the corpus
+	public static class MyComp implements Comparator<Tweet> {
+
+		@Override
+		public int compare(Tweet tweet1, Tweet tweet2) {
+			if (tweet1.id < tweet2.id) {
+				return -1;
+			} else if (tweet1.id == tweet2.id) {
+				return 0;
+			} else {
+				return 1;
+			}
+		}
 	}
 
 }

@@ -18,63 +18,68 @@ public class Main {
 
 	public static void main(final String[] args) {
 		// wait key pressed to prepare monitoring...
-		System.out.println("Enter sth to start");
+		/*System.out.println("Enter sth to start");
 		try {
 			System.in.read();
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Starting...");
+		System.out.println("Starting...");*/
 
 		// initialisation
-		final Long start = System.nanoTime();
+		// final Long start = System.nanoTime();
 		// final File f = new File(
 		// "src/data/train.txt");
 		final File learn = new File("src/dataProject/smallTrain_dev.txt");
 		final File test = new File("src/dataProject/internTest.txt");
+		final File results = new File("src/dataProject/results.txt");
 
 		// Pipe lined test
 		final AbstractManager manager = new ManagerRegions2();
-		final ArrayList<ArrayList<Tweet>> datas = manager
-				.fileToArrayList(learn);
+		final ArrayList<ArrayList<Tweet>> datas = manager.fileToArrayList(learn);
 		manager.learn(datas, 0.1, false);
-		final ArrayList<Tweet> dataTest =
-				manager.fileToSimpleArrayList(test);
+		final ArrayList<Tweet> dataTest = manager.fileToSimpleArrayList(test);
 		final ArrayList<ArrayList<Tweet>> res = manager.work(dataTest, true);
-		manager.check(res, true);
+		// final double accuracy = manager.check(res, true);
+		// System.out.println(accuracy);
+		try {
+			manager.writeResult(res, results);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		// test simple
-		//		final AbstractManager simple = new SimpleManager();
-		//		final ArrayList<ArrayList<Tweet>> datas =
-		//				simple.fileToArrayList(learn);
-		//		simple.learn(datas, 0.1, true);
-		//		final ArrayList<Tweet> dataTest = simple.fileToSimpleArrayList(test);
-		//		final ArrayList<ArrayList<Tweet>> res = simple.work(dataTest, true);
-		//		simple.check(res, true);
-		//		simple.crossValidation(learn, 0.1, false);
+		// final AbstractManager simple = new SimpleManager();
+		// final ArrayList<ArrayList<Tweet>> datas =
+		// simple.fileToArrayList(learn);
+		// simple.learn(datas, 0.1, true);
+		// final ArrayList<Tweet> dataTest = simple.fileToSimpleArrayList(test);
+		// final ArrayList<ArrayList<Tweet>> res = simple.work(dataTest, true);
+		// simple.check(res, true);
+		// simple.crossValidation(learn, 0.1, false);
 
 		// Classifieur region
-		//		final AbstractManager region = new ManagerRegions2();
-		//		final ArrayList<ArrayList<Tweet>> datas =
-		//				region.fileToArrayList(learn);
-		//		final Classifier classifierRegions = new ClassifierRegions3Groupes();
-		//		classifierRegions.learn(region, datas, 0.1, false);
-		//		final ArrayList<Tweet> dataTest = region.fileToSimpleArrayList(test);
-		//		final ArrayList<ArrayList<Tweet>> res = classifierRegions.work(
-		//				dataTest, true);
-		//		classifierRegions.check(res, true);
-		//		classifierRegions.calculateAndDisplayConfusionMatrix(res);
+		// final AbstractManager region = new ManagerRegions2();
+		// final ArrayList<ArrayList<Tweet>> datas =
+		// region.fileToArrayList(learn);
+		// final Classifier classifierRegions = new ClassifierRegions3Groupes();
+		// classifierRegions.learn(region, datas, 0.1, false);
+		// final ArrayList<Tweet> dataTest = region.fileToSimpleArrayList(test);
+		// final ArrayList<ArrayList<Tweet>> res = classifierRegions.work(
+		// dataTest, true);
+		// classifierRegions.check(res, true);
+		// classifierRegions.calculateAndDisplayConfusionMatrix(res);
 
 		// Classifieur latin
-		//		final AbstractManager region = new ManagerRegions();
-		//		final ArrayList<ArrayList<Tweet>> datas = region.fileToArrayList(learn);
-		//		final Classifier classifierRegions = new ClassifierLatin();
-		//		classifierRegions.learn(region, datas, 0.1, false);
-		//		final ArrayList<Tweet> dataTest = region.fileToSimpleArrayList(test);
-		//		final ArrayList<ArrayList<Tweet>> res = classifierRegions.work(
-		//				dataTest, true);
-		//		classifierRegions.check(res, true);
-		//		classifierRegions.calculateAndDisplayConfusionMatrix(res);
+		// final AbstractManager region = new ManagerRegions();
+		// final ArrayList<ArrayList<Tweet>> datas = region.fileToArrayList(learn);
+		// final Classifier classifierRegions = new ClassifierLatin();
+		// classifierRegions.learn(region, datas, 0.1, false);
+		// final ArrayList<Tweet> dataTest = region.fileToSimpleArrayList(test);
+		// final ArrayList<ArrayList<Tweet>> res = classifierRegions.work(
+		// dataTest, true);
+		// classifierRegions.check(res, true);
+		// classifierRegions.calculateAndDisplayConfusionMatrix(res);
 
 		// test crossvalidation
 		// final AbstractManager simple = new SimpleManager();
@@ -89,8 +94,6 @@ public class Main {
 		// final double moyenne = simple.crossValidation(learn, bestK, false);
 		// System.out.println("precision = " + moyenne);
 
-		System.out.println("\n\n> TOTAL TIME : " + (System.nanoTime() - start)
-				/ 1000000000 + " sec");
+		// System.out.println("\n\n> TOTAL TIME : " + (System.nanoTime() - start) / 1000000000 + " sec");
 	}
-
 }

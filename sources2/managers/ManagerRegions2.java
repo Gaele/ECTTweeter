@@ -44,8 +44,7 @@ public class ManagerRegions2 extends AbstractManager {
 	 *            diplays infos if true
 	 */
 	@Override
-	public void learn(final ArrayList<ArrayList<Tweet>> datas, final double k,
-			final boolean verbose) {
+	public void learn(final ArrayList<ArrayList<Tweet>> datas, final double k, final boolean verbose) {
 		region.learn(this, datas, k, verbose);
 		altaique.learn(this, datas, k, verbose);
 		indtel.learn(this, datas, k, verbose);
@@ -65,45 +64,39 @@ public class ManagerRegions2 extends AbstractManager {
 	 *         ListOfDerivedClasses<ListOfTweetsFor1DerivedClass<Tweet>>
 	 */
 	@Override
-	public ArrayList<ArrayList<Tweet>> work(final ArrayList<Tweet> dataTest,
-			final boolean verbose) {
-		System.out.println("Marqueur 1");
+	public ArrayList<ArrayList<Tweet>> work(final ArrayList<Tweet> dataTest, final boolean verbose) {
+		// System.out.println("Marqueur 1");
 		final ArrayList<ArrayList<Tweet>> results = new ArrayList<ArrayList<Tweet>>();
 		for (int i = 0; i < NB_CLASSES; i++) {
 			results.add(new ArrayList<Tweet>());
 		}
-		System.out.println("Marqueur 2");
-		ArrayList<ArrayList<Tweet>> localResult = new
-				ArrayList<ArrayList<Tweet>>();
+		// System.out.println("Marqueur 2");
+		ArrayList<ArrayList<Tweet>> localResult = new ArrayList<ArrayList<Tweet>>();
 		localResult = region.work(dataTest, true);
-		System.out.println("Marqueur 3");
-		final ArrayList<ArrayList<Tweet>> latinResult = latin.work(
-				localResult.get(0), false);
+		// System.out.println("Marqueur 3");
+		final ArrayList<ArrayList<Tweet>> latinResult = latin.work(localResult.get(0), false);
 		results.get(2).addAll(latinResult.get(0));
 		results.get(3).addAll(latinResult.get(1));
 		results.get(5).addAll(latinResult.get(2));
 		results.get(8).addAll(latinResult.get(3));
 		final ArrayList<Tweet> euroErrors = latinResult.get(4);
 
-		System.out.println("Marqueur 4");
-		final ArrayList<ArrayList<Tweet>> asianResult = altaique.work(
-				localResult.get(1), false);
+		// System.out.println("Marqueur 4");
+		final ArrayList<ArrayList<Tweet>> asianResult = altaique.work(localResult.get(1), false);
 		results.get(1).addAll(asianResult.get(0));
 		results.get(6).addAll(asianResult.get(1));
 		results.get(7).addAll(asianResult.get(2));
 		final ArrayList<Tweet> asianErrors = asianResult.get(3);
 
-		System.out.println("Marqueur 5");
-		final ArrayList<ArrayList<Tweet>> indtelResult = indtel.work(
-				localResult.get(1), false);
+		// System.out.println("Marqueur 5");
+		final ArrayList<ArrayList<Tweet>> indtelResult = indtel.work(localResult.get(1), false);
 		results.get(4).addAll(indtelResult.get(0));
 		results.get(9).addAll(indtelResult.get(1));
 		final ArrayList<Tweet> indtelErrors = indtelResult.get(2);
 
-		System.out.println("Marqueur 6");
-		//		final ClassifierSimple simple = new ClassifierSimple();
-		final ArrayList<ArrayList<Tweet>> asianCorrected = simple.work(
-				asianErrors, false);
+		// System.out.println("Marqueur 6");
+		// final ClassifierSimple simple = new ClassifierSimple();
+		final ArrayList<ArrayList<Tweet>> asianCorrected = simple.work(asianErrors, false);
 		results.get(0).addAll(asianCorrected.get(0));
 		results.get(1).addAll(asianCorrected.get(1));
 		results.get(2).addAll(asianCorrected.get(2));
@@ -116,9 +109,8 @@ public class ManagerRegions2 extends AbstractManager {
 		results.get(9).addAll(asianCorrected.get(9));
 		results.get(10).addAll(asianCorrected.get(10));
 
-		System.out.println("Marqueur 7");
-		final ArrayList<ArrayList<Tweet>> euroCorrected = simple.work(
-				euroErrors, false);
+		// System.out.println("Marqueur 7");
+		final ArrayList<ArrayList<Tweet>> euroCorrected = simple.work(euroErrors, false);
 		results.get(0).addAll(euroCorrected.get(0));
 		results.get(1).addAll(euroCorrected.get(1));
 		results.get(2).addAll(euroCorrected.get(2));
@@ -131,9 +123,8 @@ public class ManagerRegions2 extends AbstractManager {
 		results.get(9).addAll(euroCorrected.get(9));
 		results.get(10).addAll(euroCorrected.get(10));
 
-		System.out.println("Marqueur 8");
-		final ArrayList<ArrayList<Tweet>> indtelCorrected = simple.work(
-				indtelErrors, false);
+		// System.out.println("Marqueur 8");
+		final ArrayList<ArrayList<Tweet>> indtelCorrected = simple.work(indtelErrors, false);
 		results.get(0).addAll(indtelCorrected.get(0));
 		results.get(1).addAll(indtelCorrected.get(1));
 		results.get(2).addAll(indtelCorrected.get(2));
@@ -159,8 +150,7 @@ public class ManagerRegions2 extends AbstractManager {
 	 * @return the accuracy in %
 	 */
 	@Override
-	public double check(final ArrayList<ArrayList<Tweet>> res,
-			final boolean verbose) {
+	public double check(final ArrayList<ArrayList<Tweet>> res, final boolean verbose) {
 		final double accuracy = simple.check(res, verbose);
 		if (verbose) {
 			simple.calculateAndDisplayConfusionMatrix(res);
@@ -227,30 +217,30 @@ public class ManagerRegions2 extends AbstractManager {
 	@Override
 	public String itn(final Integer polarite) {
 		switch (polarite) {
-		case 0:
-			return "ARA";
-		case 1:
-			return "CHI";
-		case 2:
-			return "FRE";
-		case 3:
-			return "GER";
-		case 4:
-			return "HIN";
-		case 5:
-			return "ITA";
-		case 6:
-			return "JPN";
-		case 7:
-			return "KOR";
-		case 8:
-			return "SPA";
-		case 9:
-			return "TEL";
-		case 10:
-			return "TUR";
-		default:
-			return "???";
+			case 0:
+				return "ARA";
+			case 1:
+				return "CHI";
+			case 2:
+				return "FRE";
+			case 3:
+				return "GER";
+			case 4:
+				return "HIN";
+			case 5:
+				return "ITA";
+			case 6:
+				return "JPN";
+			case 7:
+				return "KOR";
+			case 8:
+				return "SPA";
+			case 9:
+				return "TEL";
+			case 10:
+				return "TUR";
+			default:
+				return "???";
 		}
 	}
 
