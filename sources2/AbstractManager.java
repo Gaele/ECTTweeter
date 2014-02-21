@@ -154,7 +154,7 @@ public abstract class AbstractManager {
 			final String polarity = itn(tweet.getX());
 			bw.write(polarity);
 			bw.newLine();
-			System.out.println(tweet.getY().getId() + " " + polarity);
+			System.out.println(polarity);
 		}
 		bw.close();
 	}

@@ -30,8 +30,16 @@ public class Main {
 		// final Long start = System.nanoTime();
 		// final File f = new File(
 		// "src/data/train.txt");
+		if(args.length != 1) {
+			System.out.println("usage: java -cp bin sources2.Main fichierTest");
+			System.exit(1);
+		}
+
+		final String testFnm = args[0];
+		System.out.println("testFnm: "+testFnm);
 		final File learn = new File("src/dataProject/smallTrain_dev.txt");
-		final File test = new File("src/dataProject/internTestDebug.txt");//
+		//		final File test2 = new File("src/dataProject/internTest.txt");
+		final File test = new File(testFnm);
 		final File results = new File("src/dataProject/results.txt");
 
 		// Pipe lined test
@@ -39,14 +47,9 @@ public class Main {
 		final ArrayList<ArrayList<Tweet>> datas = manager.fileToArrayList(learn);
 		manager.learn(datas, 0.1, false);
 		final ArrayList<Tweet> dataTest = manager.fileToSimpleArrayList(test);
-		System.out.println(dataTest);
+		//		System.out.println(dataTest);
 		final ArrayList<ArrayList<Tweet>> res = manager.work(dataTest, true);
-		//		for(final ArrayList<Tweet> classe : res) {
-		//			for(final Tweet t : classe) {
-		//				System.out.println(t);
-		//			}
-		//		}
-		System.out.println("RES: " + res);
+		//		System.out.println("RES: " + res);
 		// final double accuracy = manager.check(res, true);
 		// System.out.println(accuracy);
 		try {
