@@ -32,7 +32,7 @@ public abstract class AbstractManager {
 	/**
 	 * n of n-grams of words
 	 */
-	private final int NGRAM_WORDS = 2;
+	private final int NGRAM_WORDS = 1;
 	/**
 	 * n of n-grams of letters
 	 */
@@ -132,24 +132,40 @@ public abstract class AbstractManager {
 	 * 
 	 * @throws IOException
 	 */
-	public void writeResult(ArrayList<ArrayList<Tweet>> results, File resultFile) throws IOException {
+	public void writeResult(final ArrayList<ArrayList<Tweet>> results, final File resultFile) throws IOException {
 
-		OutputStream ops = new FileOutputStream(resultFile);
-		OutputStreamWriter opsr = new OutputStreamWriter(ops);
-		BufferedWriter bw = new BufferedWriter(opsr);
+		final OutputStream ops = new FileOutputStream(resultFile);
+		final OutputStreamWriter opsr = new OutputStreamWriter(ops);
+		final BufferedWriter bw = new BufferedWriter(opsr);
 
+		//		final MonCouple<Integer, Tweet> m;
 		// we sort the tweets by their appearance order in the corpus
-		TreeSet<Tweet> sortedResult = new TreeSet<Tweet>(new Tweet.MyComp());
-		for (ArrayList<Tweet> array : results) {
-			for (Tweet tweet : array) {
-				sortedResult.add(tweet);
+		// MonCouple<Integer, Tweet>
+		final TreeSet<MonCouple<Integer>> sortedResult = new TreeSet<MonCouple<Integer>>(new MonCouple.MyComp2());
+		//		System.out.println("RES: " + results);
+		int cptClasse = 0;
+		ArrayList<Tweet> array;
+		for(int classe = 0; classe < NB_CLASSES; classe++) {
+			array = results.get(classe);
+			for (final Tweet tweet : array) {
+				sortedResult.add(new MonCouple<Integer>(classe, tweet));
+				//	System.out.println("add : " + tweet.toString());
 			}
+			cptClasse++;
 		}
-		for (Tweet tweet : sortedResult) {
-			String polarity = this.itn(tweet.getPolarit());
+		//		for (final ArrayList<Tweet> array : results) {
+		//			for (final Tweet tweet : array) {
+		//				sortedResult.add(tweet);
+		//				//	System.out.println("add : " + tweet.toString());
+		//			}
+		//			cptClasse++;
+		//		}
+		System.out.println("begin");
+		for (final MonCouple<Integer> tweet : sortedResult) {
+			final String polarity = itn(tweet.getX());
 			bw.write(polarity);
 			bw.newLine();
-			System.out.println(polarity);
+			System.out.println(tweet.getY().getId() + " " + polarity);
 		}
 		bw.close();
 	}
@@ -395,7 +411,7 @@ public abstract class AbstractManager {
 	 *            n for n-grams of letters ; 0 to ignore them
 	 * @return tab with the codes of the n-grams in the dictionary
 	 */
-	public Integer[] getNumbersFromWords(final String[] tweet, int n1, int n2) {
+	public Integer[] getNumbersFromWords(final String[] tweet, final int n1, final int n2) {
 
 		final ArrayList<Integer> nGrams = new ArrayList<Integer>();
 		int nbApostrophes = 0;
@@ -420,7 +436,7 @@ public abstract class AbstractManager {
 					}
 					// end tagging count
 				} else { // concatenation of the n-gram (without spaces between words)
-					StringBuilder sb = new StringBuilder();
+					final StringBuilder sb = new StringBuilder();
 					for (int k = 0; k < i; k++) {
 						sb.append(tweet[j + k]);
 					}
@@ -434,17 +450,17 @@ public abstract class AbstractManager {
 					nextId++;
 				} else {
 					nGrams.add(nGramNumber);
-					int occ = occurrences.get(nGram);
+					final int occ = occurrences.get(nGram);
 					occurrences.put(nGram, occ + 1);
 				}
 			}
 		}
 
-		double apostrophesRatio = (double) nbApostrophes / (double) tweet.length;
-		double articlesRatio = (double) nbArticles / (double) tweet.length;
+		final double apostrophesRatio = (double) nbApostrophes / (double) tweet.length;
+		final double articlesRatio = (double) nbArticles / (double) tweet.length;
 
-		int pourcentageApostrophes = (int) Math.round(apostrophesRatio * 100);
-		int pourcentageArticles = (int) Math.round(articlesRatio * 100);
+		final int pourcentageApostrophes = (int) Math.round(apostrophesRatio * 100);
+		final int pourcentageArticles = (int) Math.round(articlesRatio * 100);
 
 		dictionary.put("{{apostrophe}}", nextId);
 		for (int i = 0; i < pourcentageApostrophes; i++) {
@@ -459,12 +475,12 @@ public abstract class AbstractManager {
 
 		// n-grams of letters (each token considered separately, without spaces)
 		if (n2 > 0) {
-			for (String token : tweet) {
+			for (final String token : tweet) {
 				final char[] tokenChar = token.toCharArray();
 				for (int i = 1; i <= n2; i++) {
 					for (int j = 0; j < tokenChar.length - i + 1; j++) {
 						// concatenation of the n-gram
-						StringBuilder sb = new StringBuilder();
+						final StringBuilder sb = new StringBuilder();
 						for (int k = 0; k < i; k++) {
 							sb.append(tokenChar[j + k]);
 						}
@@ -477,7 +493,7 @@ public abstract class AbstractManager {
 							nextId++;
 						} else {
 							nGrams.add(nGramNumber);
-							int occ = occurrences.get(nGram);
+							final int occ = occurrences.get(nGram);
 							occurrences.put(nGram, occ + 1);
 						}
 					}

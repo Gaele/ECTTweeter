@@ -31,7 +31,7 @@ public class Main {
 		// final File f = new File(
 		// "src/data/train.txt");
 		final File learn = new File("src/dataProject/smallTrain_dev.txt");
-		final File test = new File("src/dataProject/internTest.txt");
+		final File test = new File("src/dataProject/internTestDebug.txt");//
 		final File results = new File("src/dataProject/results.txt");
 
 		// Pipe lined test
@@ -39,12 +39,19 @@ public class Main {
 		final ArrayList<ArrayList<Tweet>> datas = manager.fileToArrayList(learn);
 		manager.learn(datas, 0.1, false);
 		final ArrayList<Tweet> dataTest = manager.fileToSimpleArrayList(test);
+		System.out.println(dataTest);
 		final ArrayList<ArrayList<Tweet>> res = manager.work(dataTest, true);
+		//		for(final ArrayList<Tweet> classe : res) {
+		//			for(final Tweet t : classe) {
+		//				System.out.println(t);
+		//			}
+		//		}
+		System.out.println("RES: " + res);
 		// final double accuracy = manager.check(res, true);
 		// System.out.println(accuracy);
 		try {
 			manager.writeResult(res, results);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 
