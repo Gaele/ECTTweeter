@@ -138,28 +138,17 @@ public abstract class AbstractManager {
 		final OutputStreamWriter opsr = new OutputStreamWriter(ops);
 		final BufferedWriter bw = new BufferedWriter(opsr);
 
-		//		final MonCouple<Integer, Tweet> m;
 		// we sort the tweets by their appearance order in the corpus
-		// MonCouple<Integer, Tweet>
 		final TreeSet<MonCouple<Integer>> sortedResult = new TreeSet<MonCouple<Integer>>(new MonCouple.MyComp2());
-		//		System.out.println("RES: " + results);
 		int cptClasse = 0;
 		ArrayList<Tweet> array;
 		for(int classe = 0; classe < NB_CLASSES; classe++) {
 			array = results.get(classe);
 			for (final Tweet tweet : array) {
 				sortedResult.add(new MonCouple<Integer>(classe, tweet));
-				//	System.out.println("add : " + tweet.toString());
 			}
 			cptClasse++;
 		}
-		//		for (final ArrayList<Tweet> array : results) {
-		//			for (final Tweet tweet : array) {
-		//				sortedResult.add(tweet);
-		//				//	System.out.println("add : " + tweet.toString());
-		//			}
-		//			cptClasse++;
-		//		}
 		System.out.println("begin");
 		for (final MonCouple<Integer> tweet : sortedResult) {
 			final String polarity = itn(tweet.getX());
